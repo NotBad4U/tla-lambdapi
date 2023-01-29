@@ -208,6 +208,20 @@ begin
     { assume pint; apply ⊆D t s z pts pint }
 end;
 
+opaque symbol setEqualD1 a b : Prf (a = b) → Prf (a ⊆ b) ≔
+begin
+    assume a b Ha=b;
+    apply ssubst a b (λ y, a ⊆ y) Ha=b;
+    apply ⊆-refl a;
+end;
+
+opaque symbol setEqualD2 a b : Prf (a = b) → Prf (b ⊆ a) ≔
+begin
+    assume a b Hb=a;
+    apply ssubst b a (λ y, b ⊆ y) (sym a b Hb=a);
+    apply ⊆-refl a;
+end;
+
 /** Theorems about subsetOf {z in S : p(z)} **/
 opaque symbol subsetOfI s p z : Prf (z ∈ s) → Prf (p z) → Prf (z ∈ subsetOf s p) ≔
 begin
@@ -328,7 +342,7 @@ begin
     assume z;
     apply memBoolean z ∅;
     assume ine;
-    apply emptyE z _ ine
+    apply emptyE z false ine
 end;
 
 opaque symbol isEmpty s : (Π z, Prf (z ∉ s)) → Prf (s = ∅) ≔
@@ -384,7 +398,7 @@ begin
        apply emptyE y _ ine
     }
     {  assume ine;
-       apply emptyE z _ ine
+       apply emptyE z (z ∈ union ∅) ine
     }
 end;
 
@@ -1075,5 +1089,3 @@ begin
     assume x nins;
     apply nins
 end;
-
-

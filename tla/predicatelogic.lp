@@ -40,7 +40,7 @@ opaque symbol trans x y z : Prf (x = y) → Prf (y = z) → Prf (x = z) ≔
 begin
     assume x y z pxy pyz;
     apply subst x y (λ u, u = z) pxy pyz
-end;
+end;  
 
 /*** Propositional logic ***/
 constant symbol true : U;
@@ -118,7 +118,6 @@ begin
     { apply subst true c (λ u, p (ite u t e)) ct pfite };
     apply ssubst (ite true t e) t p (iteTrue t e) itt
 end;
-
 
 /*** Derived propositional connectives ***/
 /**
@@ -496,3 +495,81 @@ end;
 opaque symbol chooseEq p a : Prf (exists p) → (Π x, Prf (p x) → Prf(x = a)) → Prf (choose p = a) ≔
    chooseI2Ex p (λ x, x = a);
 
+symbol ∃! : (U → U) → U;
+notation ∃! quantifier;
+constant symbol ∃!-def p : Prf (∃! p = (`exists x, `forall y,  iff (p y) (y = x)));
+
+opaque symbol ∃!-intro p x : Prf (p x) → Prf (`forall y, imp (p y) (y = x)) → Prf (∃! p) ≔
+begin
+    assume p x px HUniq;
+    apply subst (∃! p) (`exists x, `forall y,  iff (p y) (y = x)) (λ z, z) (∃!-def p);
+    apply exI (λ x, `forall y, iff (p y) (y = x)) x;
+    apply allI (λ y, iff (p y) (y = x));
+    assume y;
+    apply iffI (p y) (y = x)
+    { 
+        assume Hpy;
+        have tmp: Prf ( imp (p y) (y = x) ) { apply allE (λ y, imp (p y) (y = x)) y HUniq };
+        apply mp (p y) (y = x) tmp Hpy;
+    }
+    {
+        assume HEqxy;
+        apply subst y x (λ z, p z) HEqxy px; 
+    };
+end;
+
+//TODO - proove that
+opaque symbol ∃!-elim p q x : Prf (∃! p) → (Prf (p x) → Prf (`exists x, `forall y, imp (p y) (y = x)) → (Prf q)) → (Prf q) ≔
+begin
+    assume p q x HExUniqp H1;
+    admit;
+end;
+
+// #  Propositional simplification
+
+// Conversion to Boolean values
+
+symbol boolify: U → U; 
+constant symbol boolify-def x: Prf (boolify x = ite x true false);
+
+symbol isBool: U → U; 
+constant symbol isBool-def x: Prf (isBool x = (boolify x = x));
+
+opaque symbol boolifyTRUE x: Prf( (x = true) = boolify x) ≔
+begin
+    assume x;
+    apply subst (boolify x)  (ite x true false) (λ z, (x = true) = z) (boolify-def x);
+    apply caseSplit (x = true) _
+    { 
+        assume HxIsTrue;
+        apply subst x true (λ z, (x = true) = ite z true false) HxIsTrue;
+        apply subst (ite true true false) (true) (λ z,  (x = true) = z) (iteTrue true false);         
+        apply prfTrue x HxIsTrue;    
+    }
+    {
+        assume Hxfalse;
+        admit;
+     };
+end;
+
+opaque symbol boolifyTrue: Prf (boolify (true) = true) ≔
+begin
+    apply subst (boolify true) (ite true true false) (λ z, z = true) (boolify-def true);
+    simplify;
+    apply trivial;
+end;
+
+opaque symbol boolifyEq t u : Prf (boolify (t = u) = (t = u)) ≔
+begin
+    assume t u;
+    apply caseSplit ((t = u) = true) _
+    {
+        assume HTrue;
+        apply subst (t = u) (true) (λ z, boolify z = z) HTrue;
+        apply boolifyTrue;
+    }
+    {
+        assume HFalse;
+        admit;
+    };
+end;
