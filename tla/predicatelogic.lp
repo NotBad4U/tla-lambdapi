@@ -499,7 +499,7 @@ symbol ∃! : (U → U) → U;
 notation ∃! quantifier;
 constant symbol ∃!-def p : Prf (∃! p = (`exists x, `forall y,  iff (p y) (y = x)));
 
-opaque symbol ∃!-intro p x : Prf (p x) → Prf (`forall y, imp (p y) (y = x)) → Prf (∃! p) ≔
+opaque symbol ∃!-intro p x : Prf (p x) → Prf (`forall y, iff (p y) (y = x)) → Prf (∃! p) ≔
 begin
     assume p x px HUniq;
     apply subst (∃! p) (`exists x, `forall y,  iff (p y) (y = x)) (λ z, z) (∃!-def p);
@@ -509,8 +509,9 @@ begin
     apply iffI (p y) (y = x)
     { 
         assume Hpy;
-        have tmp: Prf ( imp (p y) (y = x) ) { apply allE (λ y, imp (p y) (y = x)) y HUniq };
-        apply mp (p y) (y = x) tmp Hpy;
+        admit;
+        //have tmp: Prf ( iff (p y) (y = x) ) { apply allE (λ y, iff (p y) (y = x)) y HUniq };
+        //apply mp (p y) (y = x) tmp Hpy;
     }
     {
         assume HEqxy;
@@ -518,11 +519,23 @@ begin
     };
 end;
 
-//TODO - proove that
-opaque symbol ∃!-elim p q x : Prf (∃! p) → (Prf (p x) → Prf (`exists x, `forall y, imp (p y) (y = x)) → (Prf q)) → (Prf q) ≔
+opaque symbol ∃!-elim p q: Prf (∃! p) → (Π x, Prf (p x) → Prf (`exists x, `forall y, iff (p y) (y = x)) → (Prf q)) → (Prf q) ≔
 begin
-    assume p q x HExUniqp H1;
-    admit;
+    assume p q HExUniqp H; 
+    have Unfold_HExUniqp: Prf (`exists x, `forall y,  iff (p y) (y = x)) {
+        apply ssubst (∃! p) (`exists x, `forall y,  iff (p y) (y = x)) (λ z, z) (∃!-def p) HExUniqp;
+    };
+    apply exE (λ z, `forall y, iff (p y) (y = z)) q Unfold_HExUniqp;
+    assume x HDef;
+     have Hiff: Prf (iff (p x) (x = x)) {
+        apply allE (λ z, iff (p z) (z = x)) x HDef;
+    };
+    have Hpx: Prf( p x ) {
+        apply iffE (p x) (x = x) (p x) Hiff;
+        assume H1 H2;
+        apply mp (x = x) (p x) H2 (refl x); 
+    };
+    apply H x Hpx Unfold_HExUniqp;
 end;
 
 // #  Propositional simplification
