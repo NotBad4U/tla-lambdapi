@@ -227,6 +227,24 @@ begin
     { assume pnp; apply absurd p (npf pnp) }
 end;
 
+opaque symbol notSym p q: (Prf (not (p = q)) → Prf (false)) → (Prf (not (q = p)) → Prf (false)) ≔
+begin
+    assume p q H;
+    have tmp: Prf (p = q) {
+        apply ccontr (p = q) H;
+    };
+    assume H2;
+    have tmp2: Prf (not (p = q)) {
+        have H3: Prf (q = p) {
+            apply sym p q;
+            apply tmp;
+        };
+        admit;
+    };
+    apply H tmp2;
+end;
+
+
 opaque symbol notnotI p : Prf p → Prf (not (not p)) ≔
 begin
     assume p pp;
@@ -509,9 +527,13 @@ begin
     apply iffI (p y) (y = x)
     { 
         assume Hpy;
-        admit;
-        //have tmp: Prf ( iff (p y) (y = x) ) { apply allE (λ y, iff (p y) (y = x)) y HUniq };
-        //apply mp (p y) (y = x) tmp Hpy;
+        have Hiff: Prf ( iff (p y) (y = x) ) {
+            apply allE (λ z, iff (p z) (z = x)) y HUniq;
+        };
+        apply iffE (p y) (y = x) (y = x) Hiff;
+            assume H1;
+            assume H2;
+            apply mp (p y) (y = x) H1 Hpy;
     }
     {
         assume HEqxy;
@@ -572,6 +594,27 @@ begin
     apply trivial;
 end;
 
+opaque symbol boolifyFalse: Prf (boolify (false) = false) ≔
+begin
+    apply subst (boolify false) (ite false true false) (λ z, z = false) (boolify-def false);
+    simplify;
+    apply trivial;
+end;
+
+opaque symbol falseIsBool: Prf (isBool false) ≔
+begin
+    apply subst (isBool false) (boolify false = false) (λ z, z) (isBool-def false);
+    apply boolifyFalse;
+end;
+
+opaque symbol boolifyFalseI p: Prf( not p ) → Prf ( (boolify p) = false ) ≔
+begin
+    assume p Hnotp;
+    apply subst (boolify p) (ite p true false) (λ z, z = false) (boolify-def p);
+    admit;
+    // TODO: need more axioms
+end;
+
 opaque symbol boolifyEq t u : Prf (boolify (t = u) = (t = u)) ≔
 begin
     assume t u;
@@ -583,6 +626,7 @@ begin
     }
     {
         assume HFalse;
-        admit;
+        // TODO: need more axioms
+        admit; 
     };
 end;
