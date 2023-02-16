@@ -1,5 +1,5 @@
 .POSIX:
-SRC = predicatelogic.lp settheory.lp fixedpoints.lp function.lp
+SRC = predicatelogic.lp settheory.lp fixedpoints.lp function.lp smtlib.lp cantor.lp
 OBJ = $(SRC:.lp=.lpo)
 .SUFFIXES:
 
