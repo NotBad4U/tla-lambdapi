@@ -707,6 +707,8 @@ begin
     }
 end;
 
+print ∪Assoc;
+
 opaque symbol ∪EmptyR s : Prf (s ∪ ∅ = s) ≔
 begin
     assume s;
@@ -774,6 +776,26 @@ begin
     apply ∪E (upair x x) s z q inadd
     {  simplify; assume eqz; apply pxq eqz  }
     {  assume ins; apply psq ins  }
+end;
+
+symbol singleton: U → U; 
+constant symbol singleton-def x: Prf (singleton x = addElt x ∅);
+
+opaque symbol singleton-iff a b: Prf (iff (a ∈ singleton b) (a = b)) ≔
+begin
+    assume a b;
+    apply subst (singleton b) (addElt b ∅) (λ z, iff (a ∈ z) (a = b)) (singleton-def b);
+    apply iffI (a ∈ addElt b ∅) (a = b)
+    {
+        assume HaInB;
+        admit;
+        //TODO: add axiom addElt-if
+    }
+    {
+        assume HaEqb;
+        apply ssubst a b (λ z, a ∈ addElt z ∅) HaEqb; 
+        apply addEltI1 a ∅;
+    }
 end;
 
 opaque symbol bforallAddElt x s p : Prf (iff (bforall (addElt x s) p ) (and (p x) (bforall s p))) ≔

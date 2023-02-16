@@ -32,7 +32,7 @@ constant symbol funcEqual f g: Prf (isAFunc f) → Prf (isAFunc g) → Prf (DOMA
 // T. It cannot be defined as a set comprehension because we do not have a
 // bounding set for its elements.
 
-symbol FuncSet: U → U → U;
+symbol FuncSet:  U → U → U;
 constant symbol FuncSetAx f S T: Prf (iff 
                                         (f ∈ (FuncSet S T))
                                         (and (isAFunc f)  (DOMAIN f = and S (bforall S   (λ x, (fapply f x) ∈ T))))
@@ -47,7 +47,8 @@ constant symbol except-def f v e: Prf (except f v e = Func (DOMAIN f) (λ x, ite
 // defined in the TLC module of the standard library.
 
 symbol oneArg: U → U → U;
-constant symbol oneArg-def x d e: Prf (Func (x ∈ d) e);
+constant symbol oneArg-def x d e: Prf (Func (x ∈ singleton d) e);
+notation oneArg infix 1;
 
 //extend
 symbol extend : U → U → U;
@@ -246,4 +247,25 @@ begin
             //TODO
         };
     };
+end;
+
+opaque symbol funcConstruct p S: Prf (bforall S (λ x, `exists y, (p x y))) 
+                                →  Prf (`exists f, and (and (isAFunc(f)) (DOMAIN f = S)) (bforall S (λ x, p x (fapply f x)))) ≔
+begin
+    admit;
+end;
+
+
+// Functions spaces
+
+opaque symbol funcSetE f x S T p: Prf (f ∈ (FuncSet S T)) → Prf (x ∈ S) → ( Prf (isAFunc f) → Prf (DOMAIN f) → Prf (fapply f x ∈ T) → Prf p) → Prf p ≔
+begin
+    assume f x S T p HFuncSet HxInS H;
+    //TODO: unfold FuncSet -- everything should be inside
+    admit
+end;
+
+opaque symbol funcSetE' f x S T p: Prf (f ∈ (FuncSet S T)) → ( Prf (isAFunc f) → Prf (DOMAIN f) → Prf (`forall x, fapply f x ∈ T) → Prf p) → Prf p ≔
+begin
+    admit
 end;

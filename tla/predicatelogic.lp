@@ -142,6 +142,11 @@ end;
 **/
 symbol not : U → U;
 constant symbol not-def x : Prf (not x = ite x false true);
+
+symbol ¬: U → U;
+notation ¬ prefix 1;
+rule ¬ $x ↪ not $x;
+
 symbol and : U → U → U;
 constant symbol and-def x y : Prf (and x y = ite x (ite y true false) false);
 symbol or : U → U → U;
@@ -629,4 +634,59 @@ begin
         // TODO: need more axioms
         admit; 
     };
+end;
+
+// SMT-lib solver
+constant symbol or_simplify p q r : Prf ((or p q) = r);
+
+constant symbol cong x y f: Prf (x = y) → Prf (f x = f y);
+
+constant symbol not_not x: Prf (or (not (not (not x))) x);
+
+constant symbol equiv_pos2 x y : Prf (or (or (not (x = y)) (not x)) y);
+
+opaque symbol inverseOr x : Prf (or x (¬ x) = false) ≔  
+begin
+    admit
+end;
+
+opaque symbol double_negation_elim x: Prf (not (not x) = x) ≔
+begin
+    admit
+end;
+
+
+opaque symbol univ_bounds_or x: Prf (or true x = true) ≔
+begin
+    assume x;
+    simplify;
+    apply (orI1 true x);
+    apply trivial;  
+end;
+
+opaque symbol identity_or_l x: Prf (or false x) → Prf x ≔
+begin
+    assume x;
+    admit;
+end;
+
+opaque symbol identity_or_r x: Prf (or x false) → Prf x ≔
+begin
+    assume x;
+    admit;
+end;
+
+opaque symbol reduction_clause x a b: Prf (or x a) → Prf (or (not x) b) → Prf (or a b) ≔
+begin
+    admit;
+end;
+
+opaque symbol reduction_clause2 x a b: Prf (or a x) → Prf (or b (not x)) → Prf (or a b) ≔
+begin
+    admit;
+end;
+
+opaque symbol idempotence_or x : Prf (or x x = x) ≔ 
+begin
+    admit
 end;
