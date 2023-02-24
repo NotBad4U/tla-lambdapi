@@ -62,19 +62,19 @@ constant symbol bforall-def s p :
 // membership is Boolean
 constant symbol memBoolean x y : (Prf (x ∈ y) → Prf false) → Prf ((x ∈ y) = false);
 // two sets are equal if they contamem the same elements
-constant symbol extensionality x y : (Π z, Prf (iff (z ∈ x) (z ∈ y))) → Prf (x = y);
+constant symbol extensionality x y : (Π z, Prf ((z ∈ x) ⟺ (z ∈ y))) → Prf (x = y);
 // z is a subset of x iff every element of z is an element of x
 constant symbol subset-def x z : 
-  Prf (iff (z ∈ (subset x)) (`forall y, imp (y ∈ z) (y ∈ x)));
+  Prf ((z ∈ (subset x)) ⟺ (`forall y, imp (y ∈ z) (y ∈ x)));
 // union x contains those elements that are contained in some set in x
 constant symbol union-def x z : 
-  Prf (iff (z ∈ (union x)) (`exists y, and (y ∈ x) (z ∈ y)));
+  Prf ((z ∈ (union x)) ⟺ (`exists y, and (y ∈ x) (z ∈ y)));
 // { z \in x : p(z) }
 constant symbol subsetOf-def x p z : 
-  Prf (iff (z ∈ (subsetOf x p)) (and (z ∈ x) (p z)));
+  Prf ((z ∈ (subsetOf x p)) ⟺ (and (z ∈ x) (p z)));
 // { f(y) : y \in x }
 constant symbol setOfAll-def x f z : 
-  Prf (iff (z ∈ setOfAll x f) (`exists y, and (y ∈ x) (z = f y)));
+  Prf ((z ∈ setOfAll x f) ⟺ (`exists y, and (y ∈ x) (z = f y)));
 // axioms about the infinity set
 constant symbol infinity_1 : Prf (∅ ∈ infinity);
 constant symbol infinity_2 x : Prf (x ∈ infinity) → Prf ((addElt x x) ∈ infinity);
@@ -544,7 +544,7 @@ begin
     {  simplify; apply trivial  }
 end;
 
-opaque symbol upairSame x z : Prf (iff (z ∈ upair x x) (z = x)) ≔
+opaque symbol upairSame x z : Prf ((z ∈ upair x x) ⟺ (z = x)) ≔
 begin
     assume x z;
     apply iffI (z ∈ upair x x) (z = x)
@@ -622,7 +622,7 @@ begin
     {  assume yt; apply ptq; apply ssubst y t (λ u, z ∈ u) yt pzy }
 end;
 
-opaque symbol ∪IsEmpty s t : Prf (iff (s ∪ t = ∅) (and (s = ∅) (t = ∅))) ≔
+opaque symbol ∪IsEmpty s t : Prf ((s ∪ t = ∅) ⟺ (and (s = ∅) (t = ∅))) ≔
 begin
     assume s t;
     apply iffI (s ∪ t = ∅) (and (s = ∅) (t = ∅))
@@ -781,10 +781,10 @@ end;
 symbol singleton: U → U; 
 constant symbol singleton-def x: Prf (singleton x = addElt x ∅);
 
-opaque symbol singleton-iff a b: Prf (iff (a ∈ singleton b) (a = b)) ≔
+opaque symbol singleton-iff a b: Prf ((a ∈ singleton b) ⟺ (a = b)) ≔
 begin
     assume a b;
-    apply subst (singleton b) (addElt b ∅) (λ z, iff (a ∈ z) (a = b)) (singleton-def b);
+    apply subst (singleton b) (addElt b ∅) (λ z, (a ∈ z) ⟺ (a = b)) (singleton-def b);
     apply iffI (a ∈ addElt b ∅) (a = b)
     {
         assume HaInB;
@@ -798,7 +798,7 @@ begin
     }
 end;
 
-opaque symbol bforallAddElt x s p : Prf (iff (bforall (addElt x s) p ) (and (p x) (bforall s p))) ≔
+opaque symbol bforallAddElt x s p : Prf ((bforall (addElt x s) p ) ⟺ (and (p x) (bforall s p))) ≔
 begin
     assume x s p;
     apply iffI (bforall (addElt x s) p) (and (p x) (bforall s p))
@@ -1022,7 +1022,7 @@ begin
     }
 end;
 
-opaque symbol unionIsEmpty s : Prf (iff (union s = ∅) (bforall s (λ x, x = ∅))) ≔
+opaque symbol unionIsEmpty s : Prf ((union s = ∅) ⟺ (bforall s (λ x, x = ∅))) ≔
 begin
     assume s;
     apply iffI (union s = ∅) (bforall s (λ x, x = ∅))

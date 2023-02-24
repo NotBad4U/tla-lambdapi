@@ -33,8 +33,9 @@ constant symbol funcEqual f g: Prf (isAFunc f) → Prf (isAFunc g) → Prf (DOMA
 // bounding set for its elements.
 
 symbol FuncSet:  U → U → U;
-constant symbol FuncSetAx f S T: Prf (iff 
+constant symbol FuncSetAx f S T: Prf (
                                         (f ∈ (FuncSet S T))
+                                        ⟺
                                         (and (isAFunc f)  (DOMAIN f = and S (bforall S   (λ x, (fapply f x) ∈ T))))
                                     );
 
@@ -87,7 +88,7 @@ begin
     apply funcEqual f g HfIsFunc HgIsFunc HDomEqual H;
 end;
 
-opaque symbol funcEqualIff f g :  Prf( isAFunc f ) → Prf( isAFunc g ) → Prf (iff (f = g) (and (DOMAIN f = DOMAIN g) (bforall (DOMAIN g) (λ x, (fapply f x) = (fapply g x))))) ≔
+opaque symbol funcEqualIff f g :  Prf( isAFunc f ) → Prf( isAFunc g ) → Prf ((f = g) ⟺ (and (DOMAIN f = DOMAIN g) (bforall (DOMAIN g) (λ x, (fapply f x) = (fapply g x))))) ≔
 begin
     assume f g HfIsFunc HgIsFunc;
     apply iffI (f = g) (and (DOMAIN f = DOMAIN g) (bforall (DOMAIN g) (λ x, fapply f x = fapply g x)))
@@ -225,7 +226,7 @@ begin
      {  admit;  }; 
 end;
 
-opaque symbol exceptEqual f v e: Prf (isAFunc f) → Prf (iff (except f v e = f) (or (v ∉ DOMAIN f) (fapply f v = e))) ≔
+opaque symbol exceptEqual f v e: Prf (isAFunc f) → Prf ((except f v e = f) ⟺ (or (v ∉ DOMAIN f) (fapply f v = e))) ≔
 begin
     assume f v e HisFunc;
     apply iffI (except f v e = f) (or (v ∉ DOMAIN f) (fapply f v = e))
