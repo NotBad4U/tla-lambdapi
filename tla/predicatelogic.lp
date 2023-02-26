@@ -70,6 +70,7 @@ end;
 // Corresponding rewrite rule.
 rule $x = $x ↪ true;
 
+
 opaque symbol eqTrueD p : Prf (p = true) → Prf p ≔
 begin
     assume p ppt;
@@ -146,6 +147,7 @@ constant symbol not-def x : Prf (not x = ite x false true);
 symbol ¬: U → U;
 notation ¬ prefix 1;
 rule ¬ $x ↪ not $x;
+rule ¬ ($x = $x) ↪ not $x;
 
 symbol and : U → U → U;
 constant symbol and-def x y : Prf (and x y = ite x (ite y true false) false);
@@ -155,6 +157,8 @@ symbol imp : U → U → U;
 constant symbol imp-def x y : Prf (imp x y = ite x (ite y true false) true);
 symbol iff : U → U → U;
 constant symbol iff-def x y : Prf (iff x y = and (imp x y) (imp y x));
+
+rule or $x $x ↪ $x;
 
 symbol ⟺ : U → U → U;
 notation ⟺ infix 1;

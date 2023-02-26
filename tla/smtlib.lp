@@ -1,24 +1,32 @@
 require open tla.predicatelogic;
 require open tla.settheory;
 
+symbol ⟇: U → U → U;
+notation ⟇ infix 1;
+rule $x ⟇ $y ↪ or ($x) ($y);
+
+
 // SMT-lib solver
-constant symbol or_simplify p q r : Prf ((or p q) = r);
+constant symbol or_simplify p q r : Prf ((p ⟇ q) = r);
 
 constant symbol cong x y f: Prf (x = y) → Prf (f x = f y);
 
-constant symbol not_not x: Prf (or (not (not (not x))) x);
+constant symbol not_not x: Prf ((not (not (not x))) ⟇ x);
 
-constant symbol equiv_pos1 x y : Prf (or (or (not (x = y)) x) (¬ y));
+constant symbol equiv_pos1 x y : Prf (((not (x = y)) ⟇ x) ⟇ ¬ y);
 
-constant symbol equiv_pos2 x y : Prf (or (or (not (x = y)) (not x)) y);
+constant symbol equiv_pos2 x y : Prf (((x ≠ y) ⟇ ¬ x) ⟇ y);
 
 constant symbol qnt_cnf_2 p q: Prf (or (¬ (`forall x1, `forall x2, p)) (`forall x1, `forall x2, q));
 
 constant symbol forall_inst_2 p x1 x2: Prf (or (not (`forall a1, `forall a2, p a1 a2)) (p x1 x2));
 
-constant symbol and_pos p q i: Prf (or (¬ (and p q)) i);
+constant symbol and_pos p q i: Prf ((¬ (and p q)) ⟇ i);
 
-constant symbol and_neg2 p q: Prf (or ((and p q)) (or (¬ p) (¬ q)));
+constant symbol and_neg2 p q: Prf (((and p q)) ⟇ ((¬ p) ⟇ (¬ q)));
+
+//TODO verify the rule, in the documentation it is mentionned that there is only one P
+constant symbol eq_congruent_pred t1 u1 t2 u2 p1 p2 : Prf (( t1 ≠ u1 ) ⟇ ((t2 ≠ u2) ⟇ ((p1 t1 t2) ⟇ (p2 u1 u2))));
 
 //FIXME: not sure we can prove this one but 
 opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔
@@ -71,4 +79,3 @@ opaque symbol idempotence_or x : Prf (or x x = x) ≔
 begin
     admit;
 end;
-
