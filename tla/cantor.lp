@@ -256,7 +256,7 @@ begin
         apply equiv_pos2 (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57))) (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr58)));
     };
     // (step t18 (cl (forall ((veriT_vr58 Idv) (veriT_vr59 Idv)) (= (∈ veriT_vr59 (T veriT_vr58)) (and (∈ veriT_vr59 veriT_vr58) (not (∈ veriT_vr59 (FunApp f veriT_vr59))))))) :rule th_resolution :premises (t15 t16 t17))
-    have t18: Prf (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr58))) {
+    have t18: Prf (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59))) {
         admit;
     };
 
@@ -359,7 +359,15 @@ begin
 
     // (step t42 (cl (= (∈ _x_ (T _S_)) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) :rule resolution :premises (t40 t18))
     have t42: Prf ((X ∈ T S) = (and (X ∈ S) (X ∉ fapply f_ X))) {
-        admit;
+        apply 
+        identity_or_l
+        ((X ∈ T S) = (and (X ∈ S) (X ∉ fapply f_ X)))
+        (reduction_clause
+        (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))
+        false
+        ((X ∈ T S) = (and (X ∈ S) (X ∉ fapply f_ X)))
+        (orI1 (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59)) false t18)
+        t40)
     };
 
     // (step t43 (cl (not (= _x_ _x_)) (not (= (T _S_) (FunApp _f_ _x_))) (not (∈ _x_ (T _S_))) (∈ _x_ (FunApp _f_ _x_))) :rule eq_congruent_pred)
@@ -429,7 +437,23 @@ begin
 
     // (step t49 (cl (not (∈ _x_ (T _S_)))) :rule resolution :premises (t39 t48 t42))
     have t49: Prf (X ∉ T S) {
-        admit;
+        have t39' : Prf (or ((X ∈ T S) ≠ and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ T S)) {
+            apply
+                identity_or_r
+                (or ((X ∈ T S) ≠ and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ T S))
+                (reduction_clause2
+                (and (X ∈ S) (X ∉ fapply f_ X))
+                (or ((X ∈ T S) ≠ and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ T S))
+                false
+                t39
+                (orI2 false (¬ (and (X ∈ S) (X ∉ fapply f_ X))) t48)
+                );
+        };
+        have t39'': Prf (or ((X ∈ T S) ≠ (X ∈ T S)) (X ∉ T S)) {
+            apply subst (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X)) (λ z, or ((X ∈ T S) ≠ z) (X ∉ T S)) t42 t39' 
+        };
+        have t39''': Prf (or false (X ∉ T S)) { apply t39''};
+        apply identity_or_l  (X ∉ T S) t39'''
     };
 
     // (step t50 (cl (not (= _x_ _x_)) (not (= (T _S_) (FunApp _f_ _x_))) (not (∈ _x_ (FunApp _f_ _x_))) (∈ _x_ (T _S_))) :rule eq_congruent_pred)
