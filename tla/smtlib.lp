@@ -5,6 +5,9 @@ symbol ⟇: U → U → U;
 notation ⟇ infix 1;
 rule $x ⟇ $y ↪ or ($x) ($y);
 
+rule or $x false ↪ $x;
+
+rule or false $x ↪ $x;
 
 // SMT-lib solver
 constant symbol or_simplify p q r : Prf ((p ⟇ q) = r);
