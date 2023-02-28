@@ -27,6 +27,10 @@ constant symbol and_neg2 p q: Prf (((and p q)) ⟇ ((¬ p) ⟇ (¬ q)));
 //TODO verify the rule, in the documentation it is mentionned that there is only one P
 constant symbol eq_congruent_pred t1 u1 t2 u2 p1 p2 : Prf (( t1 ≠ u1 ) ⟇ ((t2 ≠ u2) ⟇ ((p1 t1 t2) ⟇ (p2 u1 u2))));
 
+constant symbol bind p q: Π x, Prf (p x = q x) → Prf ((forall p) = (forall q));
+
+constant symbol bind2 p q: Π x y, Prf ((p x y) = (q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall a, `forall b, q a b));
+
 //FIXME: not sure we can prove this one but 
 opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔
 begin
@@ -71,7 +75,7 @@ begin
         apply orE (¬ x) b (or a b) Hr 
         {
            assume Hnotx;
-            admit;   
+            admit; //TODO
         }
         {
             assume Hb;
@@ -100,7 +104,7 @@ begin
             apply orI2 a b Hb
         }
         {
-           assume Hnotx;
+           assume Hnotx; //TODO
             admit;   
         }
     };

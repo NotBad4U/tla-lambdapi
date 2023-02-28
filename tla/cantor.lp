@@ -160,6 +160,14 @@ end;
 // (assume |SetStDef T| (forall ((smt__a Idv) (smt__x Idv)) (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x)))))))
 constant symbol SetStDef_T: Π a x, Prf ((x ∈ T a)  = (and (x ∈ a) (x ∉  (fapply f_ x))));
 
+
+opaque symbol thm_t7 : Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) ≔
+begin
+    refine bind2 (λ x y, ((x = y) = (x = y))) (λ x y, ((x = y) = (x = y)));
+    simplify;
+    admit
+end;
+
 opaque symbol Proofobligation#1: Prf (X ∈ S) → Prf (((fapply f_ X) ≠ (T S))) ≔
 begin
     simplify;
@@ -176,7 +184,8 @@ begin
         refine reduction_clause' (not (not (fapply f_ X = T S))) (fapply f_ X = T S) (orI1 (not (not (fapply f_ X = T S))) false Goal) t5;
     };
     have t7: Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) {
-        admit;
+        //apply bind2 (λ x y, (x = y) = (x = y)) (λ x y, (x = y) = (x = y));
+        apply refl (`forall x, `forall y, ((x = y) = (x = y)));
     };
     // (step t8 (cl (not (= (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y))) (forall ((veriT_vr52 Idv) (veriT_vr53 Idv)) (= (smt__TLA__TrigEq_Idv veriT_vr52 veriT_vr53) (= veriT_vr52 veriT_vr53))))) (not (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y)))) (forall ((veriT_vr52 Idv) (veriT_vr53 Idv)) (= (smt__TLA__TrigEq_Idv veriT_vr52 veriT_vr53) (= veriT_vr52 veriT_vr53)))) :rule equiv_pos2)
     have t8: Prf (
