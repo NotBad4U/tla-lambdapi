@@ -68,7 +68,7 @@ begin
 end;
 
 // Corresponding rewrite rule.
-rule $x = $x ↪ true;
+//rule $x = $x ↪ true;
 
 
 opaque symbol eqTrueD p : Prf (p = true) → Prf p ≔
@@ -676,7 +676,7 @@ opaque symbol boolifyFalse: Prf (boolify (false) = false) ≔
 begin
     apply subst (boolify false) (ite false true false) (λ z, z = false) (boolify-def false);
     simplify;
-    apply trivial;
+    apply refl false;
 end;
 
 opaque symbol falseIsBool: Prf (isBool false) ≔

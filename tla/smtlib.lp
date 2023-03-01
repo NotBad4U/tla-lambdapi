@@ -1,5 +1,4 @@
 require open tla.predicatelogic;
-require open tla.settheory;
 
 symbol ⟇: U → U → U;
 notation ⟇ infix 1;
@@ -30,6 +29,13 @@ constant symbol eq_congruent_pred t1 u1 t2 u2 p1 p2 : Prf (( t1 ≠ u1 ) ⟇ ((t
 constant symbol bind p q: Π x, Prf (p x = q x) → Prf ((forall p) = (forall q));
 
 constant symbol bind2 p q: Π x y, Prf ((p x y) = (q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall a, `forall b, q a b));
+
+opaque symbol trying_bind2 : Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) ≔
+begin
+    refine bind2 (λ x y, ((x = y) = (x = y))) (λ x y, ((x = y) = (x = y)));
+    simplify;
+    // ... and we are stuck here :)
+end;
 
 //FIXME: not sure we can prove this one but 
 opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔
