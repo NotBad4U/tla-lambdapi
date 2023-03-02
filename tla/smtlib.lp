@@ -27,9 +27,29 @@ constant symbol and_neg2 p q: Prf (((and p q)) ⟇ ((¬ p) ⟇ (¬ q)));
 //TODO verify the rule, in the documentation it is mentionned that there is only one P
 constant symbol eq_congruent_pred t1 u1 t2 u2 p1 p2 : Prf (( t1 ≠ u1 ) ⟇ ((t2 ≠ u2) ⟇ ((p1 t1 t2) ⟇ (p2 u1 u2))));
 
-constant symbol bind p q: Π x, Prf (p x = q x) → Prf ((forall p) = (forall q));
+constant symbol bind p q: (Π x, Prf (p x = q x)) → Prf ((forall p) = (forall q));
 
-constant symbol bind2 p q: Π x y, Prf ((p x y) = (q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall a, `forall b, q a b));
+constant symbol bind2 p q: (Π a b x y , Prf (p a b = q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall x, `forall y, q x y));
+
+/*
+(anchor :step t7 :args ((:= (smt__x Idv) vr52) (:= (smt__y Idv) vr53)))
+(step t7.t1 (cl (= smt__x vr52)) :rule refl)
+(step t7.t2 (cl (= smt__y vr53)) :rule refl)
+(step t7.t3 (cl (= (smt__TLA__TrigEq_Idv smt__x smt__y) (smt__TLA__TrigEq_Idv vr52 vr53))) :rule cong :premises (t7.t1 t7.t2))
+(step t7.t4 (cl (= smt__x vr52)) :rule refl)
+(step t7.t5 (cl (= smt__y vr53)) :rule refl)
+(step t7.t6 (cl (= (= smt__x smt__y) (= vr52 vr53))) :rule cong :premises (t7.t4 t7.t5))
+(step t7.t7 (cl (= (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53)))) :rule cong :premises (t7.t3 t7.t6))
+(step t7 (cl (= (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y))) (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))))) :rule bind)
+*/
+opaque symbol trying_bind2 : Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) ≔
+begin
+    apply bind2 (λ x y, ((x = y) = (x = y))) (λ vr52 vr53, ((vr52 = vr53) = (vr52 = vr53)));
+    assume x y vr52 vr53;
+    simplify;
+    apply trivial
+end;
+
 
 //FIXME: not sure we can prove this one but 
 opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔

@@ -161,11 +161,42 @@ end;
 constant symbol SetStDef_T: Π a x, Prf ((x ∈ T a)  = (and (x ∈ a) (x ∉  (fapply f_ x))));
 
 
+/*
+(anchor :step t7 :args ((:= (smt__x Idv) vr52) (:= (smt__y Idv) vr53)))
+(step t7.t1 (cl (= smt__x vr52)) :rule refl)
+(step t7.t2 (cl (= smt__y vr53)) :rule refl)
+(step t7.t3 (cl (= (smt__TLA__TrigEq_Idv smt__x smt__y) (smt__TLA__TrigEq_Idv vr52 vr53))) :rule cong :premises (t7.t1 t7.t2))
+(step t7.t4 (cl (= smt__x vr52)) :rule refl)
+(step t7.t5 (cl (= smt__y vr53)) :rule refl)
+(step t7.t6 (cl (= (= smt__x smt__y) (= vr52 vr53))) :rule cong :premises (t7.t4 t7.t5))
+(step t7.t7 (cl (= (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53)))) :rule cong :premises (t7.t3 t7.t6))
+(step t7 (cl (= (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y))) (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))))) :rule bind)
+*/
 opaque symbol thm_t7 : Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) ≔
 begin
-    refine bind2 (λ x y, ((x = y) = (x = y))) (λ x y, ((x = y) = (x = y)));
+    apply bind2 (λ x y, ((x = y) = (x = y))) (λ vr52 vr53, ((vr52 = vr53) = (vr52 = vr53)));
+    assume x y vr52 vr53;
     simplify;
-    admit
+    apply trivial
+end;
+
+/*
+(anchor :step t10 :args ((:= (vr52 Idv) vr54) (:= (vr53 Idv) vr55)))
+(step t10.t1 (cl (= vr52 vr54)) :rule refl)
+(step t10.t2 (cl (= vr53 vr55)) :rule refl)
+(step t10.t3 (cl (= (smt__TLA__TrigEq_Idv vr52 vr53) (smt__TLA__TrigEq_Idv vr54 vr55))) :rule cong :premises (t10.t1 t10.t2))
+(step t10.t4 (cl (= vr52 vr54)) :rule refl)
+(step t10.t5 (cl (= vr53 vr55)) :rule refl)
+(step t10.t6 (cl (= (= vr52 vr53) (= vr54 vr55))) :rule cong :premises (t10.t4 t10.t5))
+(step t10.t7 (cl (= (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55)))) :rule cong :premises (t10.t3 t10.t6))
+(step t10 (cl (= (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))) (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55))))) :rule bind)
+*/
+opaque symbol thm_t10 : Prf ((`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) = (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)) )) ≔
+begin
+    apply bind2 (λ vr52 vr53, ((vr52 = vr53) = (vr52 = vr53))) (λ vr54 vr55, ((vr54 = vr55) = (vr54 = vr55))) ;
+    assume vr52 vr53 vr54 vr55;
+    simplify;
+    apply trivial
 end;
 
 opaque symbol Proofobligation#1: Prf (X ∈ S) → Prf (((fapply f_ X) ≠ (T S))) ≔
@@ -183,9 +214,13 @@ begin
     have t6: Prf (fapply f_ X = (T S) ) {
         refine reduction_clause' (not (not (fapply f_ X = T S))) (fapply f_ X = T S) (orI1 (not (not (fapply f_ X = T S))) false Goal) t5;
     };
+    /*
+    (anchor :step t7 :args ((:= (smt__x Idv) vr52) (:= (smt__y Idv) vr53)))
+    ...
+    (step t7 (cl (= (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y))) (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))))) :rule bind)
+    */
     have t7: Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) {
-        //apply bind2 (λ x y, (x = y) = (x = y)) (λ x y, (x = y) = (x = y));
-        apply refl (`forall x, `forall y, ((x = y) = (x = y)));
+        apply thm_t7
     };
     // (step t8 (cl (not (= (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y))) (forall ((veriT_vr52 Idv) (veriT_vr53 Idv)) (= (smt__TLA__TrigEq_Idv veriT_vr52 veriT_vr53) (= veriT_vr52 veriT_vr53))))) (not (forall ((smt__x Idv) (smt__y Idv)) (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y)))) (forall ((veriT_vr52 Idv) (veriT_vr53 Idv)) (= (smt__TLA__TrigEq_Idv veriT_vr52 veriT_vr53) (= veriT_vr52 veriT_vr53)))) :rule equiv_pos2)
     have t8: Prf (
@@ -200,14 +235,37 @@ begin
     };
     // (step t9 (cl (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53)))) :rule th_resolution :premises (|ExtTrigEqDef Idv| t7 t8))
     have t9: Prf (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) {
+        have t8': Prf (
+            or
+                (or
+                    false
+                    (not (`forall x, `forall y, ((x = y) = (x = y))))
+                )
+                    (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))
+            ) {
+            apply ssubst 
+            (`forall x, `forall y, (x = y) = (x = y))
+            (`forall vr52, `forall vr53, (vr52 = vr53) = (vr52 = vr53))
+            (λ z, or
+                    (or
+                        false
+                        (not (`forall x, `forall y, ((x = y) = (x = y))))
+                    )
+                    (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))
+            )
+            t7 t8
+        };
         admit
     };
 
-    // (step t10 (cl (= (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))) (forall ((vr54 Idv) (veriT_vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 veriT_vr55) (= vr54 veriT_vr55))))) :rule bind)
+    /*
+    (anchor :step t10 :args ((:= (vr52 Idv) vr54) (:= (vr53 Idv) vr55)))
+    ...
+    (step t10 (cl (= (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))) (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55))))) :rule bind)
+    */
     have t10: Prf ((`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) = (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)) )) {
-        admit;
+        apply thm_t10
     };
-
     //(step t11 (cl (not (= (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53))) (forall ((vr54 Idv) (veriT_vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 veriT_vr55) (= vr54 veriT_vr55))))) (not (forall ((vr52 Idv) (vr53 Idv)) (= (smt__TLA__TrigEq_Idv vr52 vr53) (= vr52 vr53)))) (forall ((vr54 Idv) (veriT_vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 veriT_vr55) (= vr54 veriT_vr55)))) :rule equiv_pos2)
     have t11:  Prf (
         or
@@ -284,6 +342,9 @@ begin
         apply t19;
         //NOTE the rule between or and qnt_cnf sound to enter in conflict in LambdaPi logic
     };
+
+
+    // (step t21 (cl (or (not (forall ((vr54 Idv) (vr55 Idv)) (or (not (smt__TLA__TrigEq_Idv vr54 vr55)) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X))))) :rule forall_inst :args ((:= vr54 (FunApp f_ X)) (:= vr55 (T S))))
 
     // (step t32 (cl (= (T S_) (smt__TLA__FunApp f_ x_))) :rule resolution :premises (t30 t31))
     have t32: Prf ((T S) = (fapply f_ X)) {
