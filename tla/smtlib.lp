@@ -31,7 +31,9 @@ constant symbol bind p q: (Π x, Prf (p x = q x)) → Prf ((forall p) = (forall 
 
 constant symbol bind2 p q: (Π a b x y , Prf (p a b = q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall x, `forall y, q x y));
 
-constant symbol or_neg2 p q: Prf ((or p q) ⟇ (¬ p));
+constant symbol or_neg p q: Prf ((or p q) ⟇ (¬ p));
+
+constant symbol or_pos p q: Prf ( (¬ (or p q)) ⟇ (p ⟇ q));
 
 //FIXME: not sure we can prove this one but 
 opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔
