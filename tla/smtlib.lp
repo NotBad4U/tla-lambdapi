@@ -119,7 +119,18 @@ begin
     admit;
 end;
 
+//FIXME: use boolify ?
 opaque symbol idempotence_or x : Prf (or x x = x) ≔ 
 begin
-    admit;
+    assume x;
+    apply subst (or x x) (ite x true (ite x true false)) (λ z, z = x) (or-def x x);
+    apply caseSplit (x = true)
+    {
+        assume H;
+        admit
+    }
+    {
+        assume H;
+        admit
+    };
 end;
