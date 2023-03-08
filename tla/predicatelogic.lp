@@ -1,7 +1,7 @@
 /********************************************************************
  An encoding of TLA+ predicate logic in LambdaPi. The primitive
- symbols are 
- - equality, 
+ symbols are
+ - equality,
  - true, false, and if-then-else for propositional logic,
  - and Hilbert's choice as the primitive binder.
 
@@ -40,7 +40,7 @@ opaque symbol trans x y z : Prf (x = y) → Prf (y = z) → Prf (x = z) ≔
 begin
     assume x y z pxy pyz;
     apply subst x y (λ u, u = z) pxy pyz
-end;  
+end;
 
 /*** Propositional logic ***/
 constant symbol true : U;
@@ -56,7 +56,7 @@ constant symbol absurd : Π x, Prf false → Prf x;
 // equality is Boolean
 constant symbol eqBoolean : Π x y, (Prf (x = y) → Prf false) → Prf ((x = y) = false);
 // reduce provability of a conditional to provability of its branches
-constant symbol iteI : Π c t e p, 
+constant symbol iteI : Π c t e p,
                            (Prf c → Prf (p t))
                          → ((Prf c → Prf false) → Prf (p e))
                          → Prf (p (ite c t e));
@@ -200,7 +200,7 @@ begin
     assume p q pnp pp;
     have pite: Prf (ite p false true)
     {  apply ssubst (not p) (ite p false true) (λ z, z) (not-def p) pnp  };
-    have f: Prf false 
+    have f: Prf false
     {  apply iteT p false true (λ z, z) pite pp  };
     apply absurd _ f
 end;
@@ -218,7 +218,7 @@ begin
     apply ssubst (ite c t e) e p _ pite;
     apply iteI c t e (λ u, u = e)
     { assume pc; apply notE c (t = e) pnc pc }
-    { assume _; apply refl e } 
+    { assume _; apply refl e }
 end;
 
 opaque symbol caseSplit p q : (Prf p → Prf q) → (Prf (not p) → Prf q) → Prf q ≔
@@ -264,7 +264,7 @@ begin
     assume p pp;
     apply notI (not p);
     assume pnp;
-    apply notE p false pnp pp 
+    apply notE p false pnp pp
 end;
 
 opaque symbol notnotD p : Prf (not (not p)) → Prf p ≔
@@ -299,7 +299,7 @@ begin
        {  apply iteT p (ite q true false) false (λ z, z) pite pp };
        apply caseSplit q r
        {  assume pq; apply pqr pp pq  }
-       {  assume pnq; 
+       {  assume pnq;
           have f: Prf false
           {  apply iteE q true false (λ z, z) qite pnq };
           apply absurd r f
@@ -343,8 +343,8 @@ begin
     apply subst (or p q) (ite p true (ite q true false)) (λ z, z) (or-def p q);
     apply iteI p true (ite q true false) (λ u, u)
     { assume _; apply trivial }
-    { assume _; 
-      refine iteI q true false (λ u, u) _ _ 
+    { assume _;
+      refine iteI q true false (λ u, u) _ _
       { assume _; apply trivial }
       { assume qf; apply qf pq }
     }
@@ -383,12 +383,50 @@ end;
 
 opaque symbol or_assoc_l a b c : Prf (or a (or b c)) → Prf (or (or a b) c) ≔
 begin
-    admit;
+    assume a b c H;
+    apply orE a (or b c) (or (or a b) c) H
+    {
+        assume Ha;
+        apply orI1 (or a b) c;
+        apply orI1 a b Ha
+    }
+    {
+        assume Hbc;
+        apply orE b c (or (or a b) c) Hbc
+        {
+            assume Hb;
+            apply orI1 (or a b) c;
+            apply orI2 a b Hb
+        }
+        {
+            assume Hc;
+            apply orI2 (or a b) c Hc;
+        }
+    }
 end;
 
 opaque symbol or_assoc_r a b c : Prf (or (or a b) c) → Prf (or a (or b c)) ≔
 begin
-    admit;
+    assume a b c H;
+    apply orE (or a b) c (or a (or b c)) H
+    {
+        assume Hab;
+        apply orE a b (or a (or b c)) Hab
+        {
+            assume Ha;
+            apply orI1 a (or b c) Ha
+        }
+        {
+            assume Hb;
+            apply orI2 a (or b c);
+            apply orI1 b c Hb;
+        }
+    }
+    {
+        assume Hc;
+        apply orI2 a (or b c);
+        apply orI2 b c Hc;
+    }
 end;
 
 opaque symbol excluded_middle a: Prf (or a (¬ a)) ≔
@@ -404,7 +442,7 @@ begin
     assume p q pq;
     apply subst (imp p q) (ite p (ite q true false) true) (λ z, z) (imp-def p q);
     apply iteI p (ite q true false) true (λ q, q)
-    { assume pp; 
+    { assume pp;
       apply iteI q true false (λ q, q)
       { assume _; apply trivial }
       { assume qf; apply qf (pq pp) }
@@ -480,11 +518,11 @@ begin
     apply andI (imp a a) (imp a a) {
         apply impI a a;
         assume H;
-        apply H; 
+        apply H;
     } {
         apply impI a a;
         assume H;
-        apply H; 
+        apply H;
     };
 end;
 
@@ -528,9 +566,9 @@ end;
 */
 symbol choose : (U → U) → U;
 notation choose quantifier;
-constant symbol chooseI : 
+constant symbol chooseI :
     Π p x, Prf (p x) → Prf (p (choose p));
-constant symbol chooseDet : 
+constant symbol chooseDet :
     Π p q, (Π x, Prf ((p x) ⟺ (q x))) → Prf (choose p = choose q);
 
 /* Existential and universal quantification are introduced as derived
@@ -611,7 +649,7 @@ begin
     apply allI (λ y, (p y) ⟺ (y = x));
     assume y;
     apply iffI (p y) (y = x)
-    { 
+    {
         assume Hpy;
         have Hiff: Prf ((p y) ⟺ (y = x) ) {
             apply allE (λ z, (p z) ⟺ (z = x)) y HUniq;
@@ -623,13 +661,13 @@ begin
     }
     {
         assume HEqxy;
-        apply subst y x (λ z, p z) HEqxy px; 
+        apply subst y x (λ z, p z) HEqxy px;
     };
 end;
 
 opaque symbol ∃!-elim p q: Prf (∃! p) → (Π x, Prf (p x) → Prf (`exists x, `forall y, (p y) ⟺ (y = x)) → (Prf q)) → (Prf q) ≔
 begin
-    assume p q HExUniqp H; 
+    assume p q HExUniqp H;
     have Unfold_HExUniqp: Prf (`exists x, `forall y,  (p y) ⟺ (y = x)) {
         apply ssubst (∃! p) (`exists x, `forall y,  (p y) ⟺ (y = x)) (λ z, z) (∃!-def p) HExUniqp;
     };
@@ -641,7 +679,7 @@ begin
     have Hpx: Prf( p x ) {
         apply iffE (p x) (x = x) (p x) Hiff;
         assume H1 H2;
-        apply mp (x = x) (p x) H2 (refl x); 
+        apply mp (x = x) (p x) H2 (refl x);
     };
     apply H x Hpx Unfold_HExUniqp;
 end;
@@ -650,10 +688,10 @@ end;
 
 // Conversion to Boolean values
 
-symbol boolify: U → U; 
+symbol boolify: U → U;
 constant symbol boolify-def x: Prf (boolify x = ite x true false);
 
-symbol isBool: U → U; 
+symbol isBool: U → U;
 constant symbol isBool-def x: Prf (isBool x = (boolify x = x));
 
 opaque symbol boolifyTRUE x: Prf( (x = true) = boolify x) ≔
@@ -661,11 +699,11 @@ begin
     assume x;
     apply subst (boolify x)  (ite x true false) (λ z, (x = true) = z) (boolify-def x);
     apply caseSplit (x = true) _
-    { 
+    {
         assume HxIsTrue;
         apply subst x true (λ z, (x = true) = ite z true false) HxIsTrue;
-        apply subst (ite true true false) (true) (λ z,  (x = true) = z) (iteTrue true false);         
-        apply prfTrue x HxIsTrue;    
+        apply subst (ite true true false) (true) (λ z,  (x = true) = z) (iteTrue true false);
+        apply prfTrue x HxIsTrue;
     }
     {
         assume Hxfalse;
@@ -713,6 +751,6 @@ begin
     {
         assume HFalse;
         // TODO: need more axioms
-        admit; 
+        admit;
     };
 end;
