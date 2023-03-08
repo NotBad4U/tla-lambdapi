@@ -11,7 +11,6 @@ symbol S : U;
 // (declare-fun f_ () Idv)
 symbol f_ : U;
 
-
 // SMT-lib
 // (assert
 //  (Mem f_
@@ -42,8 +41,7 @@ symbol TrigEq_Idv: U → U → U;
 //      (! (= (smt__TLA__TrigEq_Idv smt__x smt__y) (= smt__x smt__y))
 //        :pattern ((smt__TLA__TrigEq_Idv smt__x smt__y))))
 //    :named |ExtTrigEqDef Idv|))
-constant symbol ExtTrigEqDef: Π x y, Prf ( TrigEq_Idv x y =  (x = y));
-
+constant symbol ExtTrigEqDef: Prf (`forall x, `forall y, (x = y) =  (x = y));
 
 // (assume |Goal| (not (or (Mem X (T S)) (not (Mem X (T S))))))
 opaque symbol Proofobligation#2: Prf (or  (X ∈  (T S)) (X ∉ (T S))) ≔
@@ -146,20 +144,20 @@ begin
         apply identity_or_r ((or (not (false = false)) (or (X ∈ T S) (not (X ∈ T S))))) tmp4;
     };
     have goal2: Prf (or false (not (or (X ∈ T S) (not (X ∈ T S))))) {
-        admit
+        apply orI2 false (not (or (X ∈ T S) (not (X ∈ T S)))) Goal
     };
     have tmp6: Prf (or false false) {
         apply reduction_clause2 (or (X ∈ T S) (not (X ∈ T S))) false false tmp5 goal2;
     };
     have tmpf: Prf false {
-        apply ssubst (or false false) false (λ z, z) (idempotence_or false) tmp6;
+        apply idempotence_or false tmp6;
     };
     apply tmpf;
 end;
 
 // (assume |SetStDef T| (forall ((smt__a Idv) (smt__x Idv)) (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x)))))))
 //TODO: make a parallel with the settheory
-constant symbol SetStDef t: Prf (`forall a, `forall x,  (x ∈ t a)  = (and (x ∈ a) (x ∉  (fapply f_ x))));
+constant symbol SetStDef t: Prf (`forall a, `forall x,  (x ∈ t a) = (and (x ∈ a) (x ∉  (fapply f_ x))));
 
 
 /*
@@ -176,7 +174,7 @@ constant symbol SetStDef t: Prf (`forall a, `forall x,  (x ∈ t a)  = (and (x �
 opaque symbol thm_t7 : Prf ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)) )) ≔
 begin
     apply bind2 (λ x y, ((x = y) = (x = y))) (λ vr52 vr53, ((vr52 = vr53) = (vr52 = vr53)));
-    assume x y vr52 vr53;
+    assume x y;
     simplify;
     apply trivial
 end;
@@ -195,7 +193,7 @@ end;
 opaque symbol thm_t10 : Prf ((`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) = (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)) )) ≔
 begin
     apply bind2 (λ vr52 vr53, ((vr52 = vr53) = (vr52 = vr53))) (λ vr54 vr55, ((vr54 = vr55) = (vr54 = vr55))) ;
-    assume vr52 vr53 vr54 vr55;
+    assume vr52 vr53;
     simplify;
     apply trivial
 end;
@@ -216,7 +214,15 @@ end;
 (step t13.t12 (cl (= (not (∈ smt__x (FunApp f_ smt__x))) (not (∈ vr57 (FunApp f_ vr57))))) :rule cong :premises (t13.t11))
 (step t13.t13 (cl (= (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x)))) (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57)))))) :rule cong :premises (t13.t7 t13.t12))
 (step t13.t14 (cl (= (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x))))) (= (∈ vr57 (T vr56)) (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57))))))) :rule cong :premises (t13.t4 t13.t13))
-(step t13 (cl (= (forall ((smt__a Idv) (smt__x Idv)) (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x)))))) (forall ((vr56 Idv) (vr57 Idv)) (= (∈ vr57 (T vr56)) (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57)))))))) :rule bind)
+(step t13 (cl (
+    = 
+        (forall ((smt__a Idv) (smt__x Idv)) (= 
+                                                (∈ smt__x (T smt__a))
+                                                (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x))))))
+        (forall ((vr56 Idv) (vr57 Idv)) (= 
+                                                (∈ vr57 (T vr56))
+                                                (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57))))))))
+:rule bind)
 */
 opaque symbol thm_t13 : Prf (
     (`forall a, `forall x, (x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x)))
@@ -224,9 +230,9 @@ opaque symbol thm_t13 : Prf (
     (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57)))) ≔
 begin
     apply bind2 (λ a x, ((x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x)))) (λ vr56 vr57,  ((vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57))));
-    assume a x vr56 vr57;
+    assume a b ;
     simplify;
-    admit;
+    apply trivial
 end;
 
 /*
@@ -254,9 +260,9 @@ opaque symbol thm_t16 : Prf (
 ) ≔
 begin
     apply bind2 (λ vr56 vr57, ((vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57)))) (λ vr58 vr59, ((vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59))));
-    assume vr56 vr57 vr58 vr59;
+    assume vr56 vr57;
     simplify;
-    admit
+    apply trivial
 end;
 
 opaque symbol Proofobligation#1: Prf (X ∈ S) → Prf (((fapply f_ X) ≠ (T S))) ≔
@@ -309,8 +315,8 @@ begin
             )
             t7 t8
         };
-        //FIXME: blocked here - I think we need to apply ExTrigerEqDef because t7 t8 reduce to True
-        admit
+        // We have t7 t8 that reduce to True, so to finish the Goal we need ExtTrigEqDef
+        apply ExtTrigEqDef
     };
 
     /*
@@ -396,9 +402,11 @@ begin
 
     //(step t19 (cl (or (not (forall ((vr54 Idv) (veriT_vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 veriT_vr55) (= vr54 veriT_vr55)))) (forall ((vr54 Idv) (veriT_vr55 Idv)) (or (not (smt__TLA__TrigEq_Idv vr54 veriT_vr55)) (= vr54 veriT_vr55))))) :rule qnt_cnf)
     have t19: Prf (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) ((`forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))  ) {
-        //FIXME: check how we can use qnt_cnf_2.
-        //apply qnt_cnf_2 (λ vr54 vr55,  (vr54 = vr55) = (vr54 = vr55)) (λ vr54 vr55,  or (vr54 ≠ vr55) (vr54 = vr55));
-        admit;
+        apply cnf2 (λ vr54 vr55, (vr54 = vr55) = (vr54 = vr55)) (λ vr54 vr55, or (vr54 ≠ vr55) (vr54 = vr55));
+        assume x y;
+        simplify;
+        apply or_comm  (x = y) (not (x = y));
+        apply excluded_middle (x = y);
     };
     //
     // (step t20 (cl
@@ -408,7 +416,6 @@ begin
     have t20: Prf (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)) ) ((`forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))  ) {
         apply t19;
     };
-
 
     // (step t21 (cl (or (not (forall ((vr54 Idv) (vr55 Idv)) (or (not (smt__TLA__TrigEq_Idv vr54 vr55)) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X))))) :rule forall_inst :args ((:= vr54 (FunApp f_ X)) (:= vr55 (T S))))
     have t21: Prf (
@@ -447,7 +454,7 @@ begin
     };
 
     // (step t25 (cl (or (not (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55)))) :rule th_resolution :premises (t24 t23))
-    //HACK: we need to use t6 to apply the symmetry of T S = fapply f_ X
+    //HACK we need to use t6 to apply the symmetry of T S = fapply f_ X
     have t25: Prf (
         or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
             (or 
@@ -515,7 +522,7 @@ begin
         have t22': Prf ((or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S )) ⟇  ( not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))) {
             apply or_comm (not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))  t22
         };
-        admit
+        admit //TODO: th_resolution (t20 t22 t25 t26))
     };
     
     // (step t28 (cl (not (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X))) :rule or_pos)
@@ -589,9 +596,8 @@ begin
         or (¬ (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = (and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))))
             (X ∈ T S = (and (X ∈ S) (X ∉ (fapply f_ X))))
     ) {
-        admit; //FIXME: question
+        apply forall_inst_2 (λ vr58 vr59,  (vr59 ∈ T vr58) = (and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))) S X
     };
-
     // (step t34 (cl (not (and (∈ x_ S_) (not (∈ x_ (smt__TLA__FunApp f_ x_))))) (not (∈ x_ (smt__TLA__FunApp f_ x_)))) :rule and_pos)
     have t34: Prf ( or (¬ (and (X ∈ S) (X ∉ (fapply f_ X)))) (X ∉ (fapply f_ X))) {
         apply and_pos (X ∈ S) (¬ (X ∈ (fapply f_ X))) (¬ (X ∈ (fapply f_ X))) ;
@@ -633,7 +639,6 @@ begin
         apply equiv_pos2 (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X));
     };
 
-    // FIXME: bug between t33 and t40 -- sounds to transform Or into cl
     //(step t40 (cl (not (forall ((vr58 Idv) (vr59 Idv)) (= (∈ vr59 (T vr58)) (and (∈ vr59 vr58) (not (∈ vr59 (FunApp _f_ vr59))))))) (= (∈ _x_ (T _S_)) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) :rule or :premises (t33))
     have t40: Prf (
         or (¬ (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = (and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))))
@@ -703,11 +708,11 @@ begin
     };
 
     // (step t47 (cl (∈ _x_ (FunApp _f_ _x_))) :rule resolution :premises (t46 t38 t41 t42))
-    // NOTE: t38 is useless here because it reduce to True with t42 equality
     have t47: Prf (X ∈ fapply f_ X) {
         have t41': Prf (or (X ∈ T S) (X ∈ fapply f_ X)) {
             apply subst (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X)) (λ z, or z (X ∈ fapply f_ X)) t42 t41
         };
+        // t38 is useless here because it reduce to True with t42 equality
         apply reduction_clause
             (X ∈ T S)
             (X ∈ fapply f_ X)
@@ -745,7 +750,7 @@ begin
 
     // (step t50 (cl (not (= _x_ _x_)) (not (= (T _S_) (FunApp _f_ _x_))) (not (∈ _x_ (FunApp _f_ _x_))) (∈ _x_ (T _S_))) :rule eq_congruent_pred)
     have t50: Prf ((X ≠ X) ⟇ ((T S ≠  fapply f_ X) ⟇  ( (X ∈ T S) ⟇ (X ∉ fapply f_ X)))) {
-        //NOTE bug in  eq_congruent_pred order
+        //NOTE bug in eq_congruent_pred order
         apply eq_congruent_pred X X (T S) (fapply f_ X) (λ x1 x2, x1 ∈ x2) (λ y1 y2, y1 ∉ y2)
     };
 

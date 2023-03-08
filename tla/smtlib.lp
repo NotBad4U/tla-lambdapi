@@ -16,7 +16,7 @@ constant symbol equiv_pos1 x y : Prf (((not (x = y)) ⟇ x) ⟇ ¬ y);
 
 constant symbol equiv_pos2 x y : Prf (((x ≠ y) ⟇ ¬ x) ⟇ y);
 
-constant symbol qnt_cnf_2 p q: Prf (or (¬ (`forall x1, `forall x2, p x1 x2)) (`forall y1, `forall y2, q y1 y2));
+//constant symbol qnt_cnf_2 (p: U → U → U) (q: U → U → U)  : Prf (or (¬ p) q);
 
 constant symbol forall_inst_2 p x1 x2: Prf (or (not (`forall a1, `forall a2, p a1 a2)) (p x1 x2));
 
@@ -24,23 +24,24 @@ constant symbol and_pos p q i: Prf ((¬ (and p q)) ⟇ i);
 
 constant symbol and_neg2 p q: Prf (((and p q)) ⟇ ((¬ p) ⟇ (¬ q)));
 
-//TODO verify the rule, in the documentation it is mentionned that there is only one P
+//QUESTION verify this rule with veriT team. The documentation mentions that there is only one P but we need P1 P2
 constant symbol eq_congruent_pred t1 u1 t2 u2 p1 p2 : Prf (( t1 ≠ u1 ) ⟇ ((t2 ≠ u2) ⟇ ((p1 t1 t2) ⟇ (p2 u1 u2))));
 
 constant symbol bind p q: (Π x, Prf (p x = q x)) → Prf ((forall p) = (forall q));
 
-constant symbol bind2 p q: (Π a b x y , Prf (p a b = q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall x, `forall y, q x y));
+constant symbol bind2 p q: (Π x y , Prf (p x y = q x y)) → Prf ((`forall a, `forall b, p a b) = (`forall x, `forall y, q x y));
+
+constant symbol cnf2 p q: (Π x y , Prf (or (¬ (p x y)) (q x y))) → Prf (or (¬ (`forall a, `forall b, p a b)) (`forall x, `forall y, q x y));
 
 constant symbol or_neg p q: Prf ((or p q) ⟇ (¬ p));
 
 constant symbol or_pos p q: Prf ( (¬ (or p q)) ⟇ (p ⟇ q));
 
-//FIXME: not sure we can prove this one but 
+//FIXME: not sure we can prove this one but -- We cannot prove this
 opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔
 begin
     admit
 end;
-
 
 opaque symbol univ_bounds_or x: Prf (or true x = true) ≔
 begin
@@ -79,7 +80,7 @@ begin
         apply orE (¬ x) b (or a b) Hr 
         {
            assume Hnotx;
-            admit; //TODO
+           apply notE x (or a b) Hnotx Hx  
         }
         {
             assume Hb;
@@ -108,29 +109,22 @@ begin
             apply orI2 a b Hb
         }
         {
-           assume Hnotx; //TODO
-            admit;   
+            assume Hnotx;
+            apply notE x (or a b) Hnotx Hx  
         }
     };
 end;
 
 opaque symbol reduction_clause' x b: Prf (or x false) → Prf (or (not x) b) → Prf (b) ≔
 begin
-    admit;
+    assume x b Hleft Hright;
+    apply reduction_clause x false b Hleft Hright
 end;
 
-//FIXME: use boolify ?
-opaque symbol idempotence_or x : Prf (or x x = x) ≔ 
+opaque symbol idempotence_or x : Prf (or x x) → Prf x  ≔ 
 begin
-    assume x;
-    apply subst (or x x) (ite x true (ite x true false)) (λ z, z = x) (or-def x x);
-    apply caseSplit (x = true)
-    {
-        assume H;
-        admit
-    }
-    {
-        assume H;
-        admit
-    };
+    assume x Horxx;
+    apply orE x x x Horxx
+    { assume Hx; apply Hx  }
+    { assume Hx; apply Hx  }
 end;

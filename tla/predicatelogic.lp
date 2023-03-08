@@ -391,6 +391,14 @@ begin
     admit;
 end;
 
+opaque symbol excluded_middle a: Prf (or a (¬ a)) ≔
+begin
+    assume a;
+    apply orCI a (¬ a);
+    assume Hnota;
+    apply Hnota;
+end;
+
 opaque symbol impI p q : (Prf p → Prf q) → Prf (imp p q) ≔
 begin
     assume p q pq;
