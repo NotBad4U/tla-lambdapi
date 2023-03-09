@@ -522,9 +522,32 @@ begin
         have t22': Prf ((or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S )) ⟇  ( not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))) {
             apply or_comm (not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))  t22
         };
-        admit //TODO: th_resolution (t20 t22 t25 t26))
+        have tmp: Prf (
+            or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
+            (or (fapply f_ X  ≠ T S)(fapply f_ X = T S))
+        ) {
+            apply reduction_clause2
+                ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))
+                (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
+                (or (fapply f_ X ≠ T S) (fapply f_ X = T S))
+                t20  t22'    
+        };
+        //HACK with t6 due to the bug of veriT mentioned earlier (inversion in =).
+        // Similar hack in t25.
+        have tmp': Prf (
+            or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
+            (or (fapply f_ X  ≠ T S)(T S = T S))
+        ) {
+            apply ssubst (fapply f_ X) (T S) 
+            (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S))) 
+            t6 tmp 
+        };
+
+        apply subst (fapply f_ X) (T S) 
+            (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (T S = z)))
+            t6 tmp'
     };
-    
+
     // (step t28 (cl (not (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X))) :rule or_pos)
     have t28: Prf (
         (¬ (or  (fapply f_ X  ≠ T S) (T S = fapply f_ X)))
