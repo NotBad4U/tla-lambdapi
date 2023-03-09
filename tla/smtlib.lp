@@ -37,12 +37,6 @@ constant symbol or_neg p q: Prf ((or p q) ⟇ (¬ p));
 
 constant symbol or_pos p q: Prf ( (¬ (or p q)) ⟇ (p ⟇ q));
 
-//FIXME: not sure we can prove this one but -- We cannot prove this
-opaque symbol double_negation_elim x: Prf ((not (not x)) = x) ≔
-begin
-    admit
-end;
-
 opaque symbol univ_bounds_or x: Prf (or true x = true) ≔
 begin
     assume x;
