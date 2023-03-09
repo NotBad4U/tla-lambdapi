@@ -215,11 +215,11 @@ end;
 (step t13.t13 (cl (= (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x)))) (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57)))))) :rule cong :premises (t13.t7 t13.t12))
 (step t13.t14 (cl (= (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x))))) (= (∈ vr57 (T vr56)) (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57))))))) :rule cong :premises (t13.t4 t13.t13))
 (step t13 (cl (
-    = 
-        (forall ((smt__a Idv) (smt__x Idv)) (= 
+    =
+        (forall ((smt__a Idv) (smt__x Idv)) (=
                                                 (∈ smt__x (T smt__a))
                                                 (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x))))))
-        (forall ((vr56 Idv) (vr57 Idv)) (= 
+        (forall ((vr56 Idv) (vr57 Idv)) (=
                                                 (∈ vr57 (T vr56))
                                                 (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57))))))))
 :rule bind)
@@ -306,7 +306,7 @@ begin
                 (not (`forall x, `forall y, ((x = y) = (x = y))))
                 (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))
             ) {
-            apply ssubst 
+            apply ssubst
             (`forall x, `forall y, (x = y) = (x = y))
             (`forall vr52, `forall vr53, (vr52 = vr53) = (vr52 = vr53))
             (λ z, or
@@ -345,7 +345,7 @@ begin
             (`forall vr52, `forall vr53, (vr52 = vr53) = (vr52 = vr53))
             (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)))
             (λ z, z)
-            t10 t9      
+            t10 t9
     };
 
     //(step t13 (cl (= (forall ((smt__a Idv) (smt__x Idv)) (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f smt__x)))))) (forall ((veriT_vr56 Idv) (veriT_vr57 Idv)) (= (∈ veriT_vr57 (T veriT_vr56)) (and (∈ veriT_vr57 veriT_vr56) (not (∈ veriT_vr57 (FunApp f veriT_vr57)))))))) :rule bind)
@@ -429,12 +429,12 @@ begin
     // (step t22 (cl (not (forall ((vr54 Idv) (vr55 Idv)) (or (not (smt__TLA__TrigEq_Idv vr54 vr55)) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) :rule or :premises (t21))
     have t22: Prf (( not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) ⟇ (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))
     ) {
-        apply t21    
+        apply t21
     };
 
     //(step t23 (cl (or (not (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) (not (not (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55)))))) :rule or_neg)
     have t23: Prf (
-        (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) 
+        (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
             (or (fapply f_ X ≠ T S)
                 (fapply f_ X =  T S))
         )
@@ -457,7 +457,7 @@ begin
     //HACK we need to use t6 to apply the symmetry of T S = fapply f_ X
     have t25: Prf (
         or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
-            (or 
+            (or
                 (fapply f_ X  ≠ T S)
                 (T S = fapply f_ X)
             )
@@ -466,12 +466,12 @@ begin
     ) {
         have t25': Prf (
             or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
-            (or 
+            (or
                 (fapply f_ X  ≠ T S)
                 (fapply f_ X = T S)
             )
             ⟇
-            (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))      
+            (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))
         ) {
                 apply //or_comm (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)) (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (fapply f_ X ≠ T S) (fapply f_ X =  T S)))
                 reduction_clause2
@@ -480,35 +480,35 @@ begin
                     (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))
                     t23
                     (or_comm (¬ ¬ ¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)) t24)
-                
+
         };
         have t25'': Prf (
             or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
-            (or 
+            (or
                 (fapply f_ X  ≠ T S)
                 (T S = T S)
             )
             ⟇
-            (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))      
+            (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))
         ) {
-            apply ssubst (fapply f_ X) (T S) 
-                (λ z, or (or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))  
-                t6 t25' 
-       
+            apply ssubst (fapply f_ X) (T S)
+                (λ z, or (or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
+                t6 t25'
+
         };
 
-        apply subst (fapply f_ X) (T S) 
-            (λ z, or (or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (T S = z))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))  
+        apply subst (fapply f_ X) (T S)
+            (λ z, or (or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (T S = z))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
             t6 t25''
     };
-   
+
     // (step t26 (cl (or (not (forall ((vr54 Idv) (vr55 Idv)) (= (smt__TLA__TrigEq_Idv vr54 vr55) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) (not (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X))))) :rule or_neg)
     have t26: Prf (
-        (or 
+        (or
             (or (fapply f_ X  ≠ T S) (T S = fapply f_ X)))
             (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))
-        ⟇    
-        (¬ (or (fapply f_ X  ≠ T S) (T S = fapply f_ X))) 
+        ⟇
+        (¬ (or (fapply f_ X  ≠ T S) (T S = fapply f_ X)))
     ) {
         apply or_neg (or (fapply f_ X  ≠ T S) (T S = fapply f_ X)) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))
     };
@@ -530,7 +530,7 @@ begin
                 ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))
                 (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
                 (or (fapply f_ X ≠ T S) (fapply f_ X = T S))
-                t20  t22'    
+                t20  t22'
         };
         //HACK with t6 due to the bug of veriT mentioned earlier (inversion in =).
         // Similar hack in t25.
@@ -538,12 +538,12 @@ begin
             or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
             (or (fapply f_ X  ≠ T S)(T S = T S))
         ) {
-            apply ssubst (fapply f_ X) (T S) 
-            (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S))) 
-            t6 tmp 
+            apply ssubst (fapply f_ X) (T S)
+            (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S)))
+            t6 tmp
         };
 
-        apply subst (fapply f_ X) (T S) 
+        apply subst (fapply f_ X) (T S)
             (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (T S = z)))
             t6 tmp'
     };
@@ -561,7 +561,7 @@ begin
 
     have t29: Prf (
         or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
-        (or 
+        (or
             (fapply f_ X  ≠ T S)
             (T S = fapply f_ X)
         )
@@ -572,7 +572,7 @@ begin
     // (step t30 (cl (not (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) (= (T S) (FunApp f_ X))) :rule resolution :premises (t28 t6))
     have t30: Prf ((¬ (or (fapply f_ X  ≠ T S) (T S = fapply f_ X))) ⟇ (T S = fapply f_ X)) {
         have t28': Prf (
-            ((T S = fapply f_ X) 
+            ((T S = fapply f_ X)
             ⟇
             (¬ (or  (fapply f_ X  ≠ T S) (T S = fapply f_ X))))
             ⟇
@@ -672,7 +672,7 @@ begin
 
     // (step t41 (cl (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))) (∈ _x_ (FunApp _f_ _x_))) :rule resolution :premises (t37 h2))
     have t41: Prf (or (and (X ∈ S) (X ∉ fapply f_ X))  (X ∈ fapply f_ X)) {
-        
+
         have t37': Prf (or (or (X ∈ fapply f_ X) (and (X ∈ S) (X ∉ fapply f_ X))) (X ∉ S)) {
             apply or_assoc_l (X ∈ fapply f_ X) (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S);
             apply or_comm  (or (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S)) (X ∈ fapply f_ X);
@@ -810,7 +810,7 @@ begin
                 false
                 t52'
                 (orI2 false  (X ∉ T S) t49)
-            
+
     };
 
     // rule resolution :premises (t51 t32))
