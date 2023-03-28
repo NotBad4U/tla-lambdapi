@@ -1,3 +1,9 @@
+/*
+    This file contain the manual reconstruction of the Cantor proofs obligation of TLAPS
+    that you could find in assets/tlapm_fc8745.smt and assets/tlapm_c4a839.smt
+
+    That experiment has allowed us to test our encoding of the TLA+ semantics and Lambdapi. 
+*/
 
 require open tla.predicatelogic;
 require open tla.settheory;
