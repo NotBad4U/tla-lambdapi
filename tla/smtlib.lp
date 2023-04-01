@@ -10,15 +10,15 @@ constant symbol or_simplify p q r : Prf ((p ⟇ q) = r);
 
 constant symbol cong x y f: Prf (x = y) → Prf (f x = f y);
 
-constant symbol not_not x: Prf ((not (not (not x))) ⟇ x);
+constant symbol not_not x: Prf ((¬ (¬ (¬ x))) ⟇ x);
 
-constant symbol equiv_pos1 x y : Prf (((not (x = y)) ⟇ x) ⟇ ¬ y);
+constant symbol equiv_pos1 x y : Prf (((¬ (x = y)) ⟇ x) ⟇ ¬ y);
 
 constant symbol equiv_pos2 x y : Prf (((x ≠ y) ⟇ ¬ x) ⟇ y);
 
 //constant symbol qnt_cnf_2 (p: U → U → U) (q: U → U → U)  : Prf (or (¬ p) q);
 
-constant symbol forall_inst_2 p x1 x2: Prf (or (not (`forall a1, `forall a2, p a1 a2)) (p x1 x2));
+constant symbol forall_inst_2 p x1 x2: Prf (or (¬ (`forall a1, `forall a2, p a1 a2)) (p x1 x2));
 
 constant symbol and_pos p q i: Prf ((¬ (and p q)) ⟇ i);
 
@@ -65,7 +65,7 @@ rule or $x false ↪ $x;
 
 rule or false $x ↪ $x;
 
-opaque symbol reduction_clause x a b: Prf (or x a) → Prf (or (not x) b) → Prf (or a b) ≔
+opaque symbol reduction_clause x a b: Prf (or x a) → Prf (or (¬ x) b) → Prf (or a b) ≔
 begin
     assume x a b Hl Hr; 
     apply orE x a (or a b) Hl
@@ -87,7 +87,7 @@ begin
     };
 end;
 
-opaque symbol reduction_clause2 x a b: Prf (or a x) → Prf (or b (not x)) → Prf (or a b) ≔
+opaque symbol reduction_clause2 x a b: Prf (or a x) → Prf (or b (¬ x)) → Prf (or a b) ≔
 begin
     assume x a b Hl Hr;
     apply orE a x (or a b) Hl
@@ -109,7 +109,7 @@ begin
     };
 end;
 
-opaque symbol reduction_clause' x b: Prf (or x false) → Prf (or (not x) b) → Prf (b) ≔
+opaque symbol reduction_clause' x b: Prf (or x false) → Prf (or (¬ x) b) → Prf (b) ≔
 begin
     assume x b Hleft Hright;
     apply reduction_clause x false b Hleft Hright

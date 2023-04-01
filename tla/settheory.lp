@@ -80,11 +80,11 @@ constant symbol infinity_1 : Prf (∅ ∈ infinity);
 constant symbol infinity_2 x : Prf (x ∈ infinity) → Prf ((addElt x x) ∈ infinity);
 // foundation axiom: a set is either empty, or it contains some element that contains no element of x
 constant symbol foundation x y : 
-  Prf (y ∈ x) → Prf (bexists x (λ y, bforall y (λ z, (not ((z ∈ x))))));
+  Prf (y ∈ x) → Prf (bexists x (λ y, bforall y (λ z, (¬ ((z ∈ x))))));
 
 /*** More derived operators. ***/
 // negated set membership (notation only)
-symbol ∉ x y ≔ not (x ∈ y);
+symbol ∉ x y ≔ ¬ (x ∈ y);
 notation ∉ infix 2;
 // subset relation
 symbol ⊆ : U → U → U;
@@ -433,7 +433,7 @@ begin
     apply emptyE z _ pine
 end;
 
-opaque symbol bexistsEmpty p : Prf (not (bexists ∅ p)) ≔
+opaque symbol bexistsEmpty p : Prf (¬ (bexists ∅ p)) ≔
 begin
     assume p;
     apply notI (bexists ∅ p);
@@ -1055,7 +1055,7 @@ rule (union $s) = ∅ ↪ bforall $s (λ x, x = ∅);
 
 /** Consequences of the foundation axiom. **/
 // The following generalizes "x ∈ y ⇒ y ∉ x": choose q ≔ y ∉ x.
-opaque symbol inAsym x y q : Prf (x ∈ y) → (Prf (not q) → Prf (y ∈ x)) → Prf q ≔
+opaque symbol inAsym x y q : Prf (x ∈ y) → (Prf (¬ q) → Prf (y ∈ x)) → Prf q ≔
 begin
     assume x y q xy qyx;
     apply ccontr q;

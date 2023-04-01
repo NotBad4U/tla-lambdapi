@@ -286,4 +286,3 @@ begin
     refine gfpUB D f S _ SD;
     apply subst (f S) S (λ T, S ⊆ T) fS (⊆-refl S);
 end;
-

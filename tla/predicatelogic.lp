@@ -141,13 +141,12 @@ end;
   attribute for indicating definitions that should be used as
   rewrite rules, similar to the [simp] attribute in Isabelle.
 **/
-symbol not : U → U;
-constant symbol not-def x : Prf (not x = ite x false true);
-
 symbol ¬: U → U;
-notation ¬ prefix 1;
-rule ¬ $x ↪ not $x;
-rule ¬ ($x = $x) ↪ not $x;
+notation ¬ prefix 2;
+
+constant symbol not-def x : Prf (¬ x = ite x false true);
+
+rule ¬ ($x = $x) ↪ ¬ $x;
 
 symbol and : U → U → U;
 constant symbol and-def x y : Prf (and x y = ite x (ite y true false) false);
@@ -167,39 +166,39 @@ rule $x ⟺ $y ↪ iff ($x) ($y);
 
 symbol ≠ : U → U → U;
 notation ≠ infix 1;
-rule $x ≠ $y ↪ not ($x = $y);
+rule $x ≠ $y ↪ ¬ ($x = $y);
 
 // Derived proof rules for propositional connectives.
-opaque symbol notTrue : Prf(not true = false) ≔
+opaque symbol notTrue : Prf(¬ true = false) ≔
 begin
-    apply subst (not true) (ite true false true) (λ x, x = false) (not-def true);
+    apply subst (¬ true) (ite true false true) (λ x, x = false) (not-def true);
     apply iteTrue false true
 end;
 
-opaque symbol notFalse : Prf(not false = true) ≔
+opaque symbol notFalse : Prf(¬ false = true) ≔
 begin
-    apply subst (not false) (ite false false true) (λ x, x = true) (not-def false);
+    apply subst (¬ false) (ite false false true) (λ x, x = true) (not-def false);
     apply iteFalse false true
 end;
 
 // Rewrite rules justified by these lemmas
-rule not true ↪ false;
-rule not false ↪ true;
+rule ¬ true ↪ false;
+rule ¬ false ↪ true;
 
-opaque symbol notI p : (Prf p → Prf false) → Prf(not p) ≔
+opaque symbol notI p : (Prf p → Prf false) → Prf(¬ p) ≔
 begin
     assume p pf;
-    apply subst (not p) (ite p false true) (λ z, z) (not-def p);
+    apply subst (¬ p) (ite p false true) (λ z, z) (not-def p);
     apply iteI p false true (λ z, z)
     {  assume pp; apply pf pp }
     {  assume _; apply trivial }
 end;
 
-opaque symbol notE p q : Prf (not p) → Prf p → Prf q ≔
+opaque symbol notE p q : Prf (¬ p) → Prf p → Prf q ≔
 begin
     assume p q pnp pp;
     have pite: Prf (ite p false true)
-    {  apply ssubst (not p) (ite p false true) (λ z, z) (not-def p) pnp  };
+    {  apply ssubst (¬ p) (ite p false true) (λ z, z) (not-def p) pnp  };
     have f: Prf false
     {  apply iteT p false true (λ z, z) pite pp  };
     apply absurd _ f
@@ -212,7 +211,7 @@ begin
     apply ssubst true false (λ z, z) tf trivial
 end;
 
-opaque symbol iteE c t e p : Prf (p (ite c t e)) → Prf (not c) → Prf (p e) ≔
+opaque symbol iteE c t e p : Prf (p (ite c t e)) → Prf (¬ c) → Prf (p e) ≔
 begin
     assume c t e p pite pnc;
     apply ssubst (ite c t e) e p _ pite;
@@ -221,7 +220,7 @@ begin
     { assume _; apply refl e }
 end;
 
-opaque symbol caseSplit p q : (Prf p → Prf q) → (Prf (not p) → Prf q) → Prf q ≔
+opaque symbol caseSplit p q : (Prf p → Prf q) → (Prf (¬ p) → Prf q) → Prf q ≔
 begin
     assume p q pq npq;
     have i: Prf (ite p q q)
@@ -233,7 +232,7 @@ begin
 end;
 
 // proof by contradiction
-opaque symbol ccontr p : (Prf (not p) → Prf false) → Prf p ≔
+opaque symbol ccontr p : (Prf (¬ p) → Prf false) → Prf p ≔
 begin
     assume p npf;
     apply caseSplit p p
@@ -241,14 +240,14 @@ begin
     { assume pnp; apply absurd p (npf pnp) }
 end;
 
-opaque symbol notSym p q: (Prf (not (p = q)) → Prf (false)) → (Prf (not (q = p)) → Prf (false)) ≔
+opaque symbol notSym p q: (Prf (¬ (p = q)) → Prf (false)) → (Prf (¬ (q = p)) → Prf (false)) ≔
 begin
     assume p q H;
     have tmp: Prf (p = q) {
         apply ccontr (p = q) H;
     };
     assume H2;
-    have tmp2: Prf (not (p = q)) {
+    have tmp2: Prf (¬ (p = q)) {
         have H3: Prf (q = p) {
             apply sym p q;
             apply tmp;
@@ -259,20 +258,20 @@ begin
 end;
 
 
-opaque symbol notnotI p : Prf p → Prf (not (not p)) ≔
+opaque symbol notnotI p : Prf p → Prf (¬ ¬ p) ≔
 begin
     assume p pp;
-    apply notI (not p);
+    apply notI (¬ p);
     assume pnp;
     apply notE p false pnp pp
 end;
 
-opaque symbol notnotD p : Prf (not (not p)) → Prf p ≔
+opaque symbol notnotD p : Prf (¬ ¬ p) → Prf p ≔
 begin
     assume p nnp;
     apply caseSplit p p
     { assume pp; apply pp }
-    { assume np; apply notE (not p) p nnp np }
+    { assume np; apply notE (¬ p) p nnp np }
 end;
 
 opaque symbol andI p q : Prf p → Prf q → Prf (and p q) ≔
@@ -351,7 +350,7 @@ begin
 end;
 
 // classical rule for introducing a disjunction
-opaque symbol orCI p q : (Prf (not p) → Prf q) → Prf (or p q) ≔
+opaque symbol orCI p q : (Prf (¬ p) → Prf q) → Prf (or p q) ≔
 begin
     assume p q npq;
     refine caseSplit p (or p q) (orI1 p q) _;
@@ -463,7 +462,7 @@ begin
     {  assume pnq; apply absurd q; apply iteE q true false (λ z, z) qite pnq }
 end;
 
-opaque symbol contrapos p q : Prf (imp p q) → Prf (not q) → Prf (not p) ≔
+opaque symbol contrapos p q : Prf (imp p q) → Prf (¬ q) → Prf (¬ p) ≔
 begin
     assume p q pimp pnq;
     apply notI p;
@@ -474,7 +473,7 @@ begin
 end;
 
 // classical elimination rule for implication
-opaque symbol impCE p q r : Prf (imp p q) → (Prf (not p) → Prf r) → (Prf q → Prf r) → Prf r ≔
+opaque symbol impCE p q r : Prf (imp p q) → (Prf (¬ p) → Prf r) → (Prf q → Prf r) → Prf r ≔
 begin
     assume p q r pimp pnpr pqr;
     apply caseSplit p r
@@ -500,7 +499,7 @@ end;
 // classical elimination rule
 opaque symbol iffCE p q r : Prf (p ⟺ q)
                           → (Prf p → Prf q → Prf r)  // r provable if both true
-                          → (Prf (not p) → Prf (not q) → Prf r)  // ... or if both false
+                          → (Prf (¬ p) → Prf (¬ q) → Prf r)  // ... or if both false
                           → Prf r ≔
 begin
     assume p q r piff ppos pneg;
@@ -579,7 +578,7 @@ notation exists quantifier;
 constant symbol exists-def p : Prf (exists p = (p (`choose x, p x = true) = true));
 symbol forall : (U → U) → U;
 notation forall quantifier;
-constant symbol forall-def p : Prf (forall p = not (`exists x, not (p x)));
+constant symbol forall-def p : Prf (forall p = ¬ (`exists x, ¬ (p x)));
 
 opaque symbol exI p x : Prf (p x) → Prf (exists p) ≔
 begin
@@ -601,10 +600,10 @@ end;
 opaque symbol allI p : (Π x, Prf (p x)) → Prf (forall p) ≔
 begin
     assume p pp;
-    apply subst (forall p) (not (`exists x, not (p x))) (λ z, z) (forall-def p);
-    apply notI (exists (λ x, not (p x)));
+    apply subst (forall p) (¬ (`exists x, ¬ (p x))) (λ z, z) (forall-def p);
+    apply notI (exists (λ x, ¬ (p x)));
     assume penp;
-    apply exE (λ x, not (p x)) false penp;
+    apply exE (λ x, ¬ (p x)) false penp;
     assume x pnpx;
     apply notE (p x) false pnpx (pp x)
 end;
@@ -612,12 +611,12 @@ end;
 opaque symbol allE p x : Prf (forall p) → Prf (p x) ≔
 begin
     assume p x pall;
-    have pnex: Prf (not (`exists x, not (p x)))
-    {  apply ssubst (forall p) (not (`exists x, not (p x))) (λ z, z) (forall-def p) pall  };
+    have pnex: Prf (¬ (`exists x, ¬ (p x)))
+    {  apply ssubst (forall p) (¬ (`exists x, ¬ (p x))) (λ z, z) (forall-def p) pall  };
     apply ccontr (p x);
     assume pnpx;
-    apply notE (exists (λ x, not (p x))) false pnex;
-    apply exI (λ x, not (p x)) x pnpx
+    apply notE (exists (λ x, ¬ (p x))) false pnex;
+    apply exI (λ x, ¬ (p x)) x pnpx
 end;
 
 // The following rule is more useful than the basic axiom chooseI
@@ -731,7 +730,7 @@ begin
     apply boolifyFalse;
 end;
 
-opaque symbol boolifyFalseI p: Prf( not p ) → Prf ( (boolify p) = false ) ≔
+opaque symbol boolifyFalseI p: Prf( ¬ p ) → Prf ( (boolify p) = false ) ≔
 begin
     assume p Hnotp;
     apply subst (boolify p) (ite p true false) (λ z, z = false) (boolify-def p);

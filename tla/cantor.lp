@@ -57,26 +57,26 @@ begin
     assume Goal;
     // (step t2 (cl (= (or (∈ X (T S)) (not (∈ X (T S)))) true))
     // :rule or_simplify)
-    have t2: Prf (or (X ∈ T S) (not (X ∈ T S)) = true) {
-        apply or_simplify (X ∈ T S) (not (X ∈ T S)) true;
+    have t2: Prf (or (X ∈ T S) (¬ (X ∈ T S)) = true) {
+        apply or_simplify (X ∈ T S) (¬ (X ∈ T S)) true;
     };
 
     //(step t3 (cl (= (not (or (∈ X (T S)) (not (∈ X (T S))))) (not true)))
     // :rule cong :premises (t2))
-    have t3: Prf (not (or (X ∈ T S) (not (X ∈ T S))) = not true) {
-        apply cong (or (X ∈ T S) (not (X ∈ T S))) (true) not t2 ;
+    have t3: Prf (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = ¬ true) {
+        apply cong (or (X ∈ T S) (¬ (X ∈ T S))) (true) (¬) t2 ;
     };
 
     // (step t4 (cl (= (not true) false)) :rule not_simplify)
-    have t4: Prf(not true = false) {
+    have t4: Prf(¬ true = false) {
         apply notTrue;
     };
 
     // (step t5 (cl (= (not (or (∈ X (T S)) (not (∈ X (T S))))) false))
     // :rule trans :premises (t3 t4))
-    have t5: Prf ((not (or (X ∈ T S) (not (X ∈ T S))) = false)) {
-        apply trans (not (or (X ∈ T S) (not (X ∈ T S))))
-                    (not true)
+    have t5: Prf ((¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false)) {
+        apply trans (¬ (or (X ∈ T S) (¬ (X ∈ T S))))
+                    (¬ true)
                     (false) t3 t4;
     };
     // (step t6 (cl (not (= (not (or (∈ X (T S)) (not (∈ X (T S))))) false)) (not (not (or (∈ X (T S)) (not (∈ X (T S)))))) false)
@@ -84,69 +84,69 @@ begin
     have t6: Prf (
         or
             (or
-                (not (not (or (X ∈ T S) (not (X ∈ T S))) = false))
-                (not (not (or (X ∈ T S) (not (X ∈ T S)))))
+                (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false))
+                (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S)))))
             )
             false
         ) {
-            apply equiv_pos2 (not (or (X ∈ T S) (not (X ∈ T S)))) false;
+            apply equiv_pos2 (¬ (or (X ∈ T S) (¬ (X ∈ T S)))) false;
     };
     //(step t7 (cl (not (not (not (or (∈ X (T S)) (not (∈ X (T S))))))) (or (∈ X (T S)) (not (∈ X (T S))))) :rule not_not)
     have t7: Prf (or
-                    (not (not (not (or (X ∈ T S) (not (X ∈ T S))))))
-                    (or (X ∈ T S) (not (X ∈ T S)))
+                    (¬ (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))))))
+                    (or (X ∈ T S) (¬ (X ∈ T S)))
     ) {
-        apply not_not (or (X ∈ T S) (not (X ∈ T S)));
+        apply not_not (or (X ∈ T S) (¬ (X ∈ T S)));
     };
     // (step t8 (cl (not (= (not (or (∈ X (T S)) (not (∈ X (T S))))) false)) (or (∈ X (T S)) (not (∈ X (T S)))) false) :rule th_resolution :premises (t7 t6))
     have t8: Prf (
         or
             (or
-                (not (not (or (X ∈ T S) (not (X ∈ T S))) = false))
-                (or (X ∈ T S) (not (X ∈ T S)))
+                (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false))
+                (or (X ∈ T S) (¬ (X ∈ T S)))
             )
             false
     ) {
         have t6': Prf (
         or
-            (not (not (or (X ∈ T S) (not (X ∈ T S)))))
+            (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S)))))
             (or
                 false
-                (not (not (or (X ∈ T S) (not (X ∈ T S))) = false))
+                (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false))
             )
         )  {
-            apply or_assoc_r (not (not (or (X ∈ T S) (not (X ∈ T S))))) false (not (not (or (X ∈ T S) (not (X ∈ T S))) = false));
-            apply or_comm  (not (not (or (X ∈ T S) (not (X ∈ T S))) = false)) (or (not (not (or (X ∈ T S) (not (X ∈ T S))))) false) t6
+            apply or_assoc_r (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))))) false (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false));
+            apply or_comm  (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false)) (or (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))))) false) t6
         };
         have tmpt8: Prf (
             or
-                (or false (not (not (or (X ∈ T S) (not (X ∈ T S))) = false)))
-                (or (X ∈ T S) (not (X ∈ T S)))
+                (or false (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false)))
+                (or (X ∈ T S) (¬ (X ∈ T S)))
         ) {
             apply reduction_clause
-                (not (not (or (X ∈ T S) (not (X ∈ T S)))))
-                (or false (not (not (or (X ∈ T S) (not (X ∈ T S))) = false)))
-                (or (X ∈ T S) (not (X ∈ T S)))
+                (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S)))))
+                (or false (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false)))
+                (or (X ∈ T S) (¬ (X ∈ T S)))
                 t6' t7
         };
-        apply or_assoc_r (not (not (or (X ∈ T S) (not (X ∈ T S))) = false)) (or (X ∈ T S) (not (X ∈ T S))) false;
-        apply or_comm  (or (not (not (or (X ∈ T S) (not (X ∈ T S))) = false)) (or (X ∈ T S) (not (X ∈ T S)))) false tmpt8;
+        apply or_assoc_r (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false)) (or (X ∈ T S) (¬ (X ∈ T S))) false;
+        apply or_comm  (or (¬ (¬ (or (X ∈ T S) (¬ (X ∈ T S))) = false)) (or (X ∈ T S) (¬ (X ∈ T S)))) false tmpt8;
     };
     //apply subst (not (or (X ∈ T S) (not (X ∈ T S)))) false (λ z, z) t5;
-    have tmp2: Prf (or (or (not (false = false)) (or (X ∈ T S) (not (X ∈ T S)))) false) {
-        apply ssubst (not (or (X ∈ T S) (not (X ∈ T S)))) false (λ z, or (or (not (z = false)) (or (X ∈ T S) (not (X ∈ T S)))) false) t5 t8;
+    have tmp2: Prf (or (or (¬ (false = false)) (or (X ∈ T S) (¬ (X ∈ T S)))) false) {
+        apply ssubst (¬ (or (X ∈ T S) (¬ (X ∈ T S)))) false (λ z, or (or (¬ (z = false)) (or (X ∈ T S) (¬ (X ∈ T S)))) false) t5 t8;
     };
-    have tmp4: Prf (or (or false (or (X ∈ T S) (not (X ∈ T S)))) false) {
-        apply ssubst (not true) false (λ z, or (or z (or (X ∈ T S) (not (X ∈ T S)))) false) (refl false) tmp2;
+    have tmp4: Prf (or (or false (or (X ∈ T S) (¬ (X ∈ T S)))) false) {
+        apply ssubst (¬ true) false (λ z, or (or z (or (X ∈ T S) (¬ (X ∈ T S)))) false) (refl false) tmp2;
     };
-    have tmp5: Prf (or false (or (X ∈ T S) (not (X ∈ T S)))) {
-        apply identity_or_r ((or (not (false = false)) (or (X ∈ T S) (not (X ∈ T S))))) tmp4;
+    have tmp5: Prf (or false (or (X ∈ T S) (¬ (X ∈ T S)))) {
+        apply identity_or_r ((or (¬ (false = false)) (or (X ∈ T S) (¬ (X ∈ T S))))) tmp4;
     };
-    have goal2: Prf (or false (not (or (X ∈ T S) (not (X ∈ T S))))) {
-        apply orI2 false (not (or (X ∈ T S) (not (X ∈ T S)))) Goal
+    have goal2: Prf (or false (¬ (or (X ∈ T S) (¬ (X ∈ T S))))) {
+        apply orI2 false (¬ (or (X ∈ T S) (¬ (X ∈ T S)))) Goal
     };
     have tmp6: Prf (or false false) {
-        apply reduction_clause2 (or (X ∈ T S) (not (X ∈ T S))) false false tmp5 goal2;
+        apply reduction_clause2 (or (X ∈ T S) (¬ (X ∈ T S))) false false tmp5 goal2;
     };
     have tmpf: Prf false {
         apply idempotence_or false tmp6;
@@ -272,12 +272,12 @@ begin
     assume Goal;
 
     //(step t5 (cl (not (not (not (smt__TLA__TrigEq_Idv (FunApp f X) (T))))) (smt__TLA__TrigEq_Idv (FunApp f X) (T))) :rule not_not)
-    have t5: Prf (or (not (not (not (fapply f_ X = T S)))) (fapply f_ X = T S)) {
+    have t5: Prf (or (¬ (¬ (¬ (fapply f_ X = T S)))) (fapply f_ X = T S)) {
         apply not_not (fapply f_ X = (T S)) ;
     };
     //(step t6 (cl (smt__TLA__TrigEq_Idv (FunApp f X) (T))) :rule th_resolution :premises (t5 |Goal|))
     have t6: Prf (fapply f_ X = (T S) ) {
-        refine reduction_clause' (not (not (fapply f_ X = T S))) (fapply f_ X = T S) (orI1 (not (not (fapply f_ X = T S))) false Goal) t5;
+        refine reduction_clause' (¬ (¬ (fapply f_ X = T S))) (fapply f_ X = T S) (orI1 (¬ (¬ (fapply f_ X = T S))) false Goal) t5;
     };
     /*
     (anchor :step t7 :args ((:= (smt__x Idv) vr52) (:= (smt__y Idv) vr53)))
@@ -291,8 +291,8 @@ begin
     have t8: Prf (
         or
             (or
-                (not ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))))
-                (not (`forall x, `forall y, ((x = y) = (x = y))))
+                (¬ ((`forall x, `forall y, ((x = y) = (x = y))) = (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))))
+                (¬ (`forall x, `forall y, ((x = y) = (x = y))))
             )
                 (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))
     ) {
@@ -302,14 +302,14 @@ begin
     have t9: Prf (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) {
         have t8': Prf (
             or
-                (not (`forall x, `forall y, ((x = y) = (x = y))))
+                (¬ (`forall x, `forall y, ((x = y) = (x = y))))
                 (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))
             ) {
             apply ssubst
             (`forall x, `forall y, (x = y) = (x = y))
             (`forall vr52, `forall vr53, (vr52 = vr53) = (vr52 = vr53))
             (λ z, or
-                    (not (`forall x, `forall y, ((x = y) = (x = y))))
+                    (¬ (`forall x, `forall y, ((x = y) = (x = y))))
                     (`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53)))
             )
             t7 t8
@@ -330,8 +330,8 @@ begin
     have t11:  Prf (
         or
             (or
-                (not ((`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) = (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)))))
-                (not (`forall vr52, `forall y, ((vr52 = y) = (vr52 = y))))
+                (¬ ((`forall vr52, `forall vr53, ((vr52 = vr53) = (vr52 = vr53))) = (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)))))
+                (¬ (`forall vr52, `forall y, ((vr52 = y) = (vr52 = y))))
             )
                 (`forall vr54, `forall vr55, ((vr54 = vr55) = (vr54 = vr55)))
         ) {
@@ -404,7 +404,7 @@ begin
         apply cnf2 (λ vr54 vr55, (vr54 = vr55) = (vr54 = vr55)) (λ vr54 vr55, or (vr54 ≠ vr55) (vr54 = vr55));
         assume x y;
         simplify;
-        apply or_comm  (x = y) (not (x = y));
+        apply or_comm  (x = y) (¬ (x = y));
         apply excluded_middle (x = y);
     };
     //
@@ -418,7 +418,7 @@ begin
 
     // (step t21 (cl (or (not (forall ((vr54 Idv) (vr55 Idv)) (or (not (smt__TLA__TrigEq_Idv vr54 vr55)) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X))))) :rule forall_inst :args ((:= vr54 (FunApp f_ X)) (:= vr55 (T S))))
     have t21: Prf (
-        or ( not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))
+        or ( ¬ ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))
             (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))
     ) {
         apply forall_inst_2 (λ vr54 vr55, or (vr54 ≠ vr55) (vr54 = vr55)) (fapply f_ X) (T S);
@@ -426,7 +426,7 @@ begin
     };
 
     // (step t22 (cl (not (forall ((vr54 Idv) (vr55 Idv)) (or (not (smt__TLA__TrigEq_Idv vr54 vr55)) (= vr54 vr55)))) (or (not (smt__TLA__TrigEq_Idv (FunApp f_ X) (T S))) (= (T S) (FunApp f_ X)))) :rule or :premises (t21))
-    have t22: Prf (( not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) ⟇ (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))
+    have t22: Prf (( ¬ ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) ⟇ (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))
     ) {
         apply t21
     };
@@ -491,13 +491,13 @@ begin
             (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))
         ) {
             apply ssubst (fapply f_ X) (T S)
-                (λ z, or (or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
+                (λ z, or (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (¬ (fapply f_ X = T S)) (z = T S))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
                 t6 t25'
 
         };
 
         apply subst (fapply f_ X) (T S)
-            (λ z, or (or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (T S = z))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
+            (λ z, or (or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (¬ (fapply f_ X = T S)) (T S = z))) (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
             t6 t25''
     };
 
@@ -518,8 +518,8 @@ begin
             (or (fapply f_ X  ≠ T S)(T S = fapply f_ X)
         )
     ) {
-        have t22': Prf ((or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S )) ⟇  ( not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))) {
-            apply or_comm (not ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))  t22
+        have t22': Prf ((or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S )) ⟇  ( ¬ ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55)))) {
+            apply or_comm (¬ ( `forall vr54, `forall vr55, or (vr54 ≠ vr55) (vr54 = vr55))) (or (fapply f_ X  ≠ T S) ((fapply f_ X) = T S ))  t22
         };
         have tmp: Prf (
             or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55)))
@@ -538,12 +538,12 @@ begin
             (or (fapply f_ X  ≠ T S)(T S = T S))
         ) {
             apply ssubst (fapply f_ X) (T S)
-            (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (z = T S)))
+            (λ z, or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (¬ (fapply f_ X = T S)) (z = T S)))
             t6 tmp
         };
 
         apply subst (fapply f_ X) (T S)
-            (λ z, or (not (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (not (fapply f_ X = T S)) (T S = z)))
+            (λ z, or (¬ (`forall vr54, `forall vr55, (vr54 = vr55) = (vr54 = vr55))) (or (¬ (fapply f_ X = T S)) (T S = z)))
             t6 tmp'
     };
 

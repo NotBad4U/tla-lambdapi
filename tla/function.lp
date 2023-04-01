@@ -209,7 +209,7 @@ begin
             assume H;
             apply Hv≠w (sym v w H);
         };
-        have notVeqW: Prf (not (v = w)) {
+        have notVeqW: Prf (v ≠ w) {
             apply notI (v = w) Hw≠v;
         };
         apply mp (v ≠ w) (p (fapply f w)) HImpVNotEqW notVeqW;
