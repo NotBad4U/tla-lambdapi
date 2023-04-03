@@ -20,9 +20,9 @@ constant symbol equiv_pos2 x y : Prf (((x ≠ y) ⟇ ¬ x) ⟇ y);
 
 constant symbol forall_inst_2 p x1 x2: Prf (or (¬ (`forall a1, `forall a2, p a1 a2)) (p x1 x2));
 
-constant symbol and_pos p q i: Prf ((¬ (and p q)) ⟇ i);
+constant symbol and_pos p q i: Prf ((¬ (p ∧ q)) ⟇ i);
 
-constant symbol and_neg2 p q: Prf (((and p q)) ⟇ ((¬ p) ⟇ (¬ q)));
+constant symbol and_neg2 p q: Prf (((p ∧ q)) ⟇ ((¬ p) ⟇ (¬ q)));
 
 //QUESTION verify this rule with veriT team. The documentation mentions that there is only one P but we need P1 P2
 constant symbol eq_congruent_pred t1 u1 t2 u2 p1 p2 : Prf (( t1 ≠ u1 ) ⟇ ((t2 ≠ u2) ⟇ ((p1 t1 t2) ⟇ (p2 u1 u2))));

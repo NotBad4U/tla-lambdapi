@@ -48,11 +48,11 @@ constant symbol addElt-def x s : Prf (addElt x s = (upair x x) ∪ s);
 // bounded choice
 symbol bchoose : U → (U → U) → U;
 constant symbol bchoose-def s p :
-  Prf (bchoose s p = `choose z, and (z ∈ s) (p z));
+  Prf (bchoose s p = `choose z, (z ∈ s) ∧ (p z));
 // bounded existential quantification
 symbol bexists : U → (U → U) → U;
 constant symbol bexists-def s p :
-  Prf (bexists s p = `exists z, and (z ∈ s) (p z));
+  Prf (bexists s p = `exists z, (z ∈ s) ∧ (p z));
 // bounded universal quantification
 symbol bforall : U → (U → U) → U;
 constant symbol bforall-def s p :
@@ -68,13 +68,13 @@ constant symbol subset-def x z :
   Prf ((z ∈ (subset x)) ⟺ (`forall y, imp (y ∈ z) (y ∈ x)));
 // union x contains those elements that are contained in some set in x
 constant symbol union-def x z : 
-  Prf ((z ∈ (union x)) ⟺ (`exists y, and (y ∈ x) (z ∈ y)));
+  Prf ((z ∈ (union x)) ⟺ (`exists y, (y ∈ x) ∧ (z ∈ y)));
 // { z \in x : p(z) }
 constant symbol subsetOf-def x p z : 
-  Prf ((z ∈ (subsetOf x p)) ⟺ (and (z ∈ x) (p z)));
+  Prf ((z ∈ (subsetOf x p)) ⟺ ((z ∈ x) ∧ (p z)));
 // { f(y) : y \in x }
 constant symbol setOfAll-def x f z : 
-  Prf ((z ∈ setOfAll x f) ⟺ (`exists y, and (y ∈ x) (z = f y)));
+  Prf ((z ∈ setOfAll x f) ⟺ (`exists y, (y ∈ x) ∧ (z = f y)));
 // axioms about the infinity set
 constant symbol infinity_1 : Prf (∅ ∈ infinity);
 constant symbol infinity_2 x : Prf (x ∈ infinity) → Prf ((addElt x x) ∈ infinity);
@@ -133,17 +133,17 @@ end;
 opaque symbol bexI s p z : Prf (z ∈ s) → Prf (p z) → Prf (bexists s p) ≔
 begin
     assume s p z pin ppz;
-    apply subst (bexists s p) (`exists z, and (z ∈ s) (p z)) (λ z, z) (bexists-def s p);
-    apply exI (λ z, and (z ∈ s) (p z)) z;
+    apply subst (bexists s p) (`exists z, (z ∈ s) ∧ (p z)) (λ z, z) (bexists-def s p);
+    apply exI (λ z, (z ∈ s) ∧ (p z)) z;
     apply andI _ _ pin ppz
 end;
 
 opaque symbol bexE s p q : Prf (bexists s p) → (Π z, Prf (z ∈ s) → Prf (p z) → Prf q) → Prf q ≔
 begin
     assume s p q pbex pimp;
-    have pex : Prf (`exists z, and (z ∈ s) (p z))
-    {  apply ssubst (bexists s p) (`exists z, and (z ∈ s) (p z)) (λ z, z) (bexists-def s p) pbex  };
-    apply exE (λ z, and (z ∈ s) (p z)) q pex;
+    have pex : Prf (`exists z, (z ∈ s) ∧ (p z))
+    {  apply ssubst (bexists s p) (`exists z, (z ∈ s) ∧ (p z)) (λ z, z) (bexists-def s p) pbex  };
+    apply exE (λ z, (z ∈ s) ∧ (p z)) q pex;
     assume z pand;
     apply pimp z (andD1 (z ∈ s) (p z) pand) (andD2 (z ∈ s) (p z) pand);
 end;
@@ -154,10 +154,10 @@ opaque symbol bChooseI s p q : Prf (bexists s p)
                             → Prf (q (bchoose s p)) ≔
 begin
     assume s p q pbex pimp;
-    apply subst (bchoose s p) (`choose z, and (z ∈ s) (p z)) (λ z, q z) (bchoose-def s p);
-    have pex: Prf (`exists z, and (z ∈ s) (p z))
-    {  apply ssubst (bexists s p) (`exists z, and (z ∈ s) (p z)) (λ z, z) (bexists-def s p) pbex  };
-    apply chooseI2Ex (λ z, and (z ∈ s) (p z)) q pex;
+    apply subst (bchoose s p) (`choose z, (z ∈ s) ∧ (p z)) (λ z, q z) (bchoose-def s p);
+    have pex: Prf (`exists z, (z ∈ s) ∧ (p z))
+    {  apply ssubst (bexists s p) (`exists z, (z ∈ s) ∧ (p z)) (λ z, z) (bexists-def s p) pbex  };
+    apply chooseI2Ex (λ z, (z ∈ s) ∧ (p z)) q pex;
     assume z pand;
     apply pimp z (andD1 (z ∈ s) (p z) pand) (andD2 (z ∈ s) (p z) pand)
 end;
@@ -226,18 +226,18 @@ end;
 opaque symbol subsetOfI s p z : Prf (z ∈ s) → Prf (p z) → Prf (z ∈ subsetOf s p) ≔
 begin
     assume s p z pzs ppz;
-    apply iffE (z ∈ subsetOf s p) (and (z ∈ s) (p z)) _ (subsetOf-def s p z);
+    apply iffE (z ∈ subsetOf s p) ((z ∈ s) ∧ (p z)) _ (subsetOf-def s p z);
     assume _ pimp;
-    apply mp (and (z ∈ s) (p z)) (z ∈ subsetOf s p) pimp;
+    apply mp ((z ∈ s) ∧ (p z)) (z ∈ subsetOf s p) pimp;
     apply andI _ _ pzs ppz;
 end;
 
 opaque symbol subsetOfE s p z q : Prf (z ∈ subsetOf s p) → (Prf (z ∈ s) → Prf (p z) → Prf q) → Prf q ≔
 begin
     assume s p z q pso pq;
-    apply iffE (z ∈ subsetOf s p) (and (z ∈ s) (p z)) _ (subsetOf-def s p z);
+    apply iffE (z ∈ subsetOf s p) ((z ∈ s) ∧ (p z)) _ (subsetOf-def s p z);
     assume pimp _;
-    have both: Prf (and (z ∈ s) (p z))
+    have both: Prf ((z ∈ s) ∧ (p z))
     { apply mp _ _ pimp pso };
     apply pq (andD1 (z ∈ s) (p z) both) (andD2 (z ∈ s) (p z) both)
 end;
@@ -246,31 +246,31 @@ end;
 opaque symbol setOfAllI s f z : Prf (z ∈ s) → Prf (f z ∈ setOfAll s f) ≔
 begin
     assume s f z pin;
-    apply iffE (f z ∈ setOfAll s f) (`exists y, and (y ∈ s) (f z = f y)) _ (setOfAll-def s f (f z));
+    apply iffE (f z ∈ setOfAll s f) (`exists y, (y ∈ s) ∧ (f z = f y)) _ (setOfAll-def s f (f z));
     assume _ pimp;
-    apply mp (exists (λ y, and (y ∈ s) (f z = f y))) (f z ∈ setOfAll s f) pimp;
-    apply exI (λ y, and (y ∈ s) (f z = f y)) z;
+    apply mp (exists (λ y, (y ∈ s) ∧ (f z = f y))) (f z ∈ setOfAll s f) pimp;
+    apply exI (λ y, (y ∈ s) ∧ (f z = f y)) z;
     apply andI (z ∈ s) (f z = f z) pin (refl (f z))
 end;
 
 opaque symbol setOfAll_eqI s f z y : Prf (z = f y) → Prf (y ∈ s) → Prf (z ∈ setOfAll s f) ≔
 begin
     assume s f z y peq pin;
-    apply iffE (z ∈ setOfAll s f) (`exists y, and (y ∈ s) (z = f y)) _ (setOfAll-def s f z);
+    apply iffE (z ∈ setOfAll s f) (`exists y, (y ∈ s) ∧ (z = f y)) _ (setOfAll-def s f z);
     assume _ pimp;
-    apply mp (exists (λ y, and (y ∈ s) (z = f y))) (z ∈ setOfAll s f) pimp;
-    apply exI (λ y, and (y ∈ s) (z = f y)) y;
+    apply mp (exists (λ y, (y ∈ s) ∧ (z = f y))) (z ∈ setOfAll s f) pimp;
+    apply exI (λ y, (y ∈ s) ∧ (z = f y)) y;
     apply andI _ _ pin peq
 end;
 
 opaque symbol setOfAllE s f z q : Prf (z ∈ setOfAll s f) → (Π y, Prf (y ∈ s) → Prf (z = f y) → Prf q) → Prf q ≔
 begin
     assume s f z q pso pqy;
-    apply iffE (z ∈ setOfAll s f) (exists (λ y, and (y ∈ s) (z = f y))) _ (setOfAll-def s f z);
+    apply iffE (z ∈ setOfAll s f) (exists (λ y, (y ∈ s) ∧ (z = f y))) _ (setOfAll-def s f z);
     assume pimp _;
-    have pex: Prf (exists (λ y, and (y ∈ s) (z = f y)))
+    have pex: Prf (exists (λ y, (y ∈ s) ∧ (z = f y)))
     {  apply mp (z ∈ setOfAll s f) _ pimp pso };
-    apply exE (λ y, and (y ∈ s) (z = f y)) q pex;
+    apply exE (λ y, (y ∈ s) ∧ (z = f y)) q pex;
     assume y pand;
     apply pqy y (andD1 (y ∈ s) (z = f y) pand) (andD2 (y ∈ s) (z = f y) pand)
 end;
@@ -279,21 +279,21 @@ end;
 opaque symbol unionI z s t : Prf (z ∈ t) → Prf (t ∈ s) → Prf (z ∈ union s) ≔
 begin
     assume z s t pzin ptin;
-    apply iffE (z ∈ union s) (exists (λ y, and (y ∈ s) (z ∈ y))) _ (union-def s z);
+    apply iffE (z ∈ union s) (exists (λ y, (y ∈ s) ∧ (z ∈ y))) _ (union-def s z);
     assume _ pimp;
-    apply mp (exists (λ y, and (y ∈ s) (z ∈ y))) (z ∈ union s) pimp;
-    apply exI (λ y, and (y ∈ s) (z ∈ y)) t;
+    apply mp (exists (λ y, (y ∈ s) ∧ (z ∈ y))) (z ∈ union s) pimp;
+    apply exI (λ y, (y ∈ s) ∧ (z ∈ y)) t;
     apply andI _ _ ptin pzin
 end;
 
 opaque symbol unionE z s q : Prf (z ∈ union s) → (Π y, Prf (z ∈ y) → Prf (y ∈ s) → Prf q) → Prf q ≔
 begin
     assume z s q pinu pqy;
-    apply iffE (z ∈ union s) (exists (λ y, and (y ∈ s) (z ∈ y))) _ (union-def s z);
+    apply iffE (z ∈ union s) (exists (λ y, (y ∈ s) ∧ (z ∈ y))) _ (union-def s z);
     assume pimp _;
-    have pex: Prf (exists (λ y, and (y ∈ s) (z ∈ y)))
+    have pex: Prf (exists (λ y, (y ∈ s) ∧ (z ∈ y)))
     {  apply mp (z ∈ union s) _ pimp pinu  };
-    apply exE (λ y, and (y ∈ s) (z ∈ y)) q pex;
+    apply exE (λ y, (y ∈ s) ∧ (z ∈ y)) q pex;
     assume y pand;
     apply pqy y (andD2 (y ∈ s) (z ∈ y) pand) (andD1 (y ∈ s) (z ∈ y) pand)
 end;
@@ -622,10 +622,10 @@ begin
     {  assume yt; apply ptq; apply ssubst y t (λ u, z ∈ u) yt pzy }
 end;
 
-opaque symbol ∪IsEmpty s t : Prf ((s ∪ t = ∅) ⟺ (and (s = ∅) (t = ∅))) ≔
+opaque symbol ∪IsEmpty s t : Prf ((s ∪ t = ∅) ⟺ ((s = ∅) ∧ (t = ∅))) ≔
 begin
     assume s t;
-    apply iffI (s ∪ t = ∅) (and (s = ∅) (t = ∅))
+    apply iffI (s ∪ t = ∅) ((s = ∅) ∧ (t = ∅))
     {  assume lhs;
        apply andI (s = ∅) (t = ∅)
        {  apply extensionality s ∅;
@@ -668,7 +668,7 @@ begin
     }
 end;
 
-rule $s ∪ $t = ∅ ↪ and ($s = ∅) ($t = ∅);
+rule $s ∪ $t = ∅ ↪ ($s = ∅) ∧ ($t = ∅);
 
 // Commutativity of binary set union. The following is a purely equational proof,
 // alternatively we could have used extensionality and the rules above.
@@ -798,10 +798,10 @@ begin
     }
 end;
 
-opaque symbol bforallAddElt x s p : Prf ((bforall (addElt x s) p ) ⟺ (and (p x) (bforall s p))) ≔
+opaque symbol bforallAddElt x s p : Prf ((bforall (addElt x s) p ) ⟺ ((p x) ∧ (bforall s p))) ≔
 begin
     assume x s p;
-    apply iffI (bforall (addElt x s) p) (and (p x) (bforall s p))
+    apply iffI (bforall (addElt x s) p) ((p x) ∧ (bforall s p))
     {  assume lhs;
        apply andI (p x) (bforall s p)
        {  apply bspec (addElt x s) p x lhs; apply addEltI1 x s  }
@@ -827,7 +827,7 @@ begin
     }
 end;
 
-rule bforall (addElt $x $s) $p ↪ and ($p $x) (bforall $s $p);
+rule bforall (addElt $x $s) $p ↪ ($p $x) ∧ (bforall $s $p);
 
 /** Theorems about binary intersection. **/
 opaque symbol ∩I s t z : Prf (z ∈ s) → Prf (z ∈ t) → Prf (z ∈ (s ∩ t)) ≔

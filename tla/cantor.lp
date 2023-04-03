@@ -16,7 +16,6 @@ symbol S : U;
 
 // (declare-fun f_ () Idv)
 symbol f_ : U;
-
 // SMT-lib
 // (assert
 //  (Mem f_
@@ -156,7 +155,7 @@ end;
 
 // (assume |SetStDef T| (forall ((smt__a Idv) (smt__x Idv)) (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f_ smt__x)))))))
 //TODO: make a parallel with the settheory
-constant symbol SetStDef t: Prf (`forall a, `forall x,  (x ∈ t a) = (and (x ∈ a) (x ∉  (fapply f_ x))));
+constant symbol SetStDef t: Prf (`forall a, `forall x,  (x ∈ t a) = ((x ∈ a) ∧ (x ∉  (fapply f_ x))));
 
 
 /*
@@ -224,11 +223,11 @@ end;
 :rule bind)
 */
 opaque symbol thm_t13 : Prf (
-    (`forall a, `forall x, (x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x)))
+    (`forall a, `forall x, (x ∈ T a) = (x ∈ a) ∧ (x ∉  (fapply f_ x)))
     =
-    (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57)))) ≔
+    (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = (vr57 ∈ vr56) ∧ (vr57 ∉  (fapply f_ vr57)))) ≔
 begin
-    apply bind2 (λ a x, ((x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x)))) (λ vr56 vr57,  ((vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57))));
+    apply bind2 (λ a x, ((x ∈ T a) = (x ∈ a) ∧ (x ∉  (fapply f_ x)))) (λ vr56 vr57,  ((vr57 ∈ T vr56) = (vr57 ∈ vr56) ∧ (vr57 ∉  (fapply f_ vr57))));
     assume a b ;
     simplify;
     apply trivial
@@ -253,12 +252,12 @@ end;
 (step t16 (cl (= (forall ((vr56 Idv) (vr57 Idv)) (= (∈ vr57 (T vr56)) (and (∈ vr57 vr56) (not (∈ vr57 (FunApp f_ vr57)))))) (forall ((vr58 Idv) (vr59 Idv)) (= (∈ vr59 (T vr58)) (and (∈ vr59 vr58) (not (∈ vr59 (FunApp f_ vr59)))))))) :rule bind)
 */
 opaque symbol thm_t16 : Prf (
-    (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57)))
+    (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57)))
     =
-    (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59)))
+    (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr59)))
 ) ≔
 begin
-    apply bind2 (λ vr56 vr57, ((vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57)))) (λ vr58 vr59, ((vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59))));
+    apply bind2 (λ vr56 vr57, ((vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57)))) (λ vr58 vr59, ((vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr59))));
     assume vr56 vr57;
     simplify;
     apply trivial
@@ -349,9 +348,9 @@ begin
 
     //(step t13 (cl (= (forall ((smt__a Idv) (smt__x Idv)) (= (∈ smt__x (T smt__a)) (and (∈ smt__x smt__a) (not (∈ smt__x (FunApp f smt__x)))))) (forall ((veriT_vr56 Idv) (veriT_vr57 Idv)) (= (∈ veriT_vr57 (T veriT_vr56)) (and (∈ veriT_vr57 veriT_vr56) (not (∈ veriT_vr57 (FunApp f veriT_vr57)))))))) :rule bind)
     have t13: Prf (
-            (`forall a, `forall x, (x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x)))
+            (`forall a, `forall x, (x ∈ T a) = (x ∈ a) ∧ (x ∉  (fapply f_ x)))
             =
-            (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57)))
+            (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = (vr57 ∈ vr56) ∧ (vr57 ∉  (fapply f_ vr57)))
         ) {
         apply thm_t13;
     };
@@ -360,23 +359,23 @@ begin
     have t14: Prf (
         or
             (or
-                (¬ (((`forall a, `forall x, (x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x))) = (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57))))))
-                (¬ (`forall a, `forall x, (x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x))))
+                (¬ (((`forall a, `forall x, (x ∈ T a) = (x ∈ a) ∧ (x ∉  (fapply f_ x))) = (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = (vr57 ∈ vr56) ∧ (vr57 ∉  (fapply f_ vr57))))))
+                (¬ (`forall a, `forall x, (x ∈ T a) = (x ∈ a) ∧ (x ∉  (fapply f_ x))))
             )
-            (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57)))
+            (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = (vr57 ∈ vr56) ∧ (vr57 ∉  (fapply f_ vr57)))
     ) {
-        apply equiv_pos2 (`forall a, `forall x, (x ∈ T a) = and (x ∈ a) (x ∉  (fapply f_ x)))             (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = and (vr57 ∈ vr56) (vr57 ∉  (fapply f_ vr57)));
+        apply equiv_pos2 (`forall a, `forall x, (x ∈ T a) = (x ∈ a) ∧ (x ∉  (fapply f_ x)))             (`forall vr56, `forall vr57, (vr57 ∈ T vr56) = (vr57 ∈ vr56) ∧ (vr57 ∉  (fapply f_ vr57)));
     };
 
     // (step t15 (cl (forall ((veriT_vr56 Idv) (veriT_vr57 Idv)) (= (∈ veriT_vr57 (T veriT_vr56)) (and (∈ veriT_vr57 veriT_vr56) (not (∈ veriT_vr57 (FunApp f veriT_vr57))))))) :rule th_resolution :premises (|SetStDef T| t13 t14))
-    have t15: Prf (`forall vr56, `forall vr57,  (vr57 ∈ T vr56) = (and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57))) ) {
+    have t15: Prf (`forall vr56, `forall vr57,  (vr57 ∈ T vr56) = ((vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57))) ) {
         apply SetStDef T
     };
     //(step t16 (cl (= (forall ((veriT_vr56 Idv) (veriT_vr57 Idv)) (= (∈ veriT_vr57 (T veriT_vr56)) (and (∈ veriT_vr57 veriT_vr56) (not (∈ veriT_vr57 (FunApp f veriT_vr57)))))) (forall ((veriT_vr58 Idv) (veriT_vr59 Idv)) (= (∈ veriT_vr59 (T veriT_vr58)) (and (∈ veriT_vr59 veriT_vr58) (not (∈ veriT_vr59 (FunApp f veriT_vr59)))))))) :rule bind)
     have t16: Prf (
-        (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57)))
+        (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57)))
         =
-        (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59)))
+        (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr59)))
     ) {
         apply thm_t16
     };
@@ -384,17 +383,17 @@ begin
     have t17: Prf(
         or
             (or
-                (¬ ( (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57))) = (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr58)))))
-                (¬ ((`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57))))))
-                (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr58)))
+                (¬ ( (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57))) = (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr58)))))
+                (¬ ((`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57))))))
+                (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr58)))
     ) {
-        apply equiv_pos2 (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57))) (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr58)));
+        apply equiv_pos2 (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57))) (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr58)));
     };
     // (step t18 (cl (forall ((veriT_vr58 Idv) (veriT_vr59 Idv)) (= (∈ veriT_vr59 (T veriT_vr58)) (and (∈ veriT_vr59 veriT_vr58) (not (∈ veriT_vr59 (FunApp f veriT_vr59))))))) :rule th_resolution :premises (t15 t16 t17))
-    have t18: Prf (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59))) {
+    have t18: Prf (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr59))) {
         apply ssubst
-            (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = and (vr57 ∈ vr56) (vr57 ∉ (fapply f_ vr57)))
-            (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = and (vr59 ∈ vr58) (vr59 ∉ (fapply f_ vr59)))
+            (`forall vr56, `forall vr57, (vr57 ∈ (T vr56)) = (vr57 ∈ vr56) ∧ (vr57 ∉ (fapply f_ vr57)))
+            (`forall vr58, `forall vr59, (vr59 ∈ (T vr58)) = (vr59 ∈ vr58) ∧ (vr59 ∉ (fapply f_ vr59)))
             (λ z, z)
             t16 t15
     };
@@ -615,18 +614,18 @@ begin
 
     // (step t33 (cl (or (not (forall ((veriT_vr58 Idv) (veriT_vr59 Idv)) (= (∈ veriT_vr59 (T veriT_vr58)) (and (∈ veriT_vr59 veriT_vr58) (not (∈ veriT_vr59 (smt__TLA__FunApp f_ veriT_vr59))))))) (= (∈ x_ (T S_)) (and (∈ x_ S_) (not (∈ x_ (smt__TLA__FunApp smt__CONSTANT_f_ X))))))) :rule forall_inst :args ((:= veriT_vr58 S_) (:= veriT_vr59 X)))
     have t33: Prf (
-        or (¬ (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = (and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))))
-            (X ∈ T S = (and (X ∈ S) (X ∉ (fapply f_ X))))
+        or (¬ (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = ((vr59 ∈ vr58) ∧ (vr59 ∉ fapply f_ vr59))))
+            (X ∈ T S = ((X ∈ S) ∧ (X ∉ (fapply f_ X))))
     ) {
-        apply forall_inst_2 (λ vr58 vr59,  (vr59 ∈ T vr58) = (and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))) S X
+        apply forall_inst_2 (λ vr58 vr59,  (vr59 ∈ T vr58) = ((vr59 ∈ vr58) ∧ (vr59 ∉ fapply f_ vr59))) S X
     };
     // (step t34 (cl (not (and (∈ x_ S_) (not (∈ x_ (smt__TLA__FunApp f_ x_))))) (not (∈ x_ (smt__TLA__FunApp f_ x_)))) :rule and_pos)
-    have t34: Prf ( or (¬ (and (X ∈ S) (X ∉ (fapply f_ X)))) (X ∉ (fapply f_ X))) {
+    have t34: Prf ( or (¬ ((X ∈ S) ∧ (X ∉ (fapply f_ X)))) (X ∉ (fapply f_ X))) {
         apply and_pos (X ∈ S) (¬ (X ∈ (fapply f_ X))) (¬ (X ∈ (fapply f_ X))) ;
     };
 
     // (step t35 (cl (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))) (not (∈ _x_ _S_)) (not (not (∈ _x_ (FunApp _f_ _x_))))) :rule and_neg)
-    have t35: Prf (or (and (X ∈ S) (X ∉ fapply f_ X)) (or (X ∉ S) (¬ (X ∉ (fapply f_ X))))) {
+    have t35: Prf (or ((X ∈ S) ∧ (X ∉ fapply f_ X)) (or (X ∉ S) (¬ (X ∉ (fapply f_ X))))) {
         apply and_neg2 (X ∈ S) (X ∉ (fapply f_ X));
     };
 
@@ -636,66 +635,66 @@ begin
     };
 
     // (step t37 (cl (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))) (not (∈ _x_ _S_)) (∈ _x_ (FunApp _f_ _x_))) :rule th_resolution :premises (t36 t35))
-    have t37: Prf (or (and (X ∈ S) (X ∉ fapply f_ X)) (or (X ∉ S) (X ∈ fapply f_ X))) {
-        have t35': Prf (or (or (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S)) (¬ (X ∉ (fapply f_ X)))) {
-            apply or_assoc_l (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S) (¬ (X ∉ (fapply f_ X))) t35;
+    have t37: Prf (or ((X ∈ S) ∧ (X ∉ fapply f_ X)) (or (X ∉ S) (X ∈ fapply f_ X))) {
+        have t35': Prf (or (or ((X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ S)) (¬ (X ∉ (fapply f_ X)))) {
+            apply or_assoc_l ((X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ S) (¬ (X ∉ (fapply f_ X))) t35;
         };
         apply or_assoc_r
-        (and (X ∈ S) (X ∉ fapply f_ X))
+        ((X ∈ S) ∧ (X ∉ fapply f_ X))
         (X ∉ S)
         (X ∈ fapply f_ X)
         (reduction_clause2
             (¬ (X ∉ (fapply f_ X)))
-            (or (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S))
+            (or ((X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ S))
             (X ∈ fapply f_ X)
             t35'
             (or_comm (¬ ¬ (X ∉ (fapply f_ X))) (X ∈ fapply f_ X) t36)
         );
     };
     // (step t38 (cl (not (= (∈ _x_ (T _S_)) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) (∈ _x_ (T _S_)) (not (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) :rule equiv_pos1)
-    have t38: Prf ( or  (or ((X ∈ T S) ≠ (and (X ∈ S) (X ∉ fapply f_ X))) (X ∈ T S)) ¬ (and (X ∈ S) (X ∉ fapply f_ X))) {
-        apply equiv_pos1 (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X));
+    have t38: Prf ( or  (or ((X ∈ T S) ≠ ((X ∈ S) ∧ (X ∉ fapply f_ X))) (X ∈ T S)) ¬ ((X ∈ S) ∧ (X ∉ fapply f_ X))) {
+        apply equiv_pos1 (X ∈ T S) ((X ∈ S) ∧ (X ∉ fapply f_ X));
     };
     // (step t39 (cl (not (= (∈ _x_ (T _S_)) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) (not (∈ _x_ (T _S_))) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_))))) :rule equiv_pos2)
-    have t39: Prf ( or  (or ((X ∈ T S) ≠ (and (X ∈ S) (X ∉ fapply f_ X))) (X ∉ T S)) (and (X ∈ S) (X ∉ fapply f_ X))) {
-        apply equiv_pos2 (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X));
+    have t39: Prf ( or  (or ((X ∈ T S) ≠ ((X ∈ S) ∧ (X ∉ fapply f_ X))) (X ∉ T S)) ((X ∈ S) ∧ (X ∉ fapply f_ X))) {
+        apply equiv_pos2 (X ∈ T S) ((X ∈ S) ∧ (X ∉ fapply f_ X));
     };
 
     //(step t40 (cl (not (forall ((vr58 Idv) (vr59 Idv)) (= (∈ vr59 (T vr58)) (and (∈ vr59 vr58) (not (∈ vr59 (FunApp _f_ vr59))))))) (= (∈ _x_ (T _S_)) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) :rule or :premises (t33))
     have t40: Prf (
-        or (¬ (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = (and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))))
-            (X ∈ T S = (and (X ∈ S) (X ∉ (fapply f_ X))))
+        or (¬ (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = ((vr59 ∈ vr58) ∧ (vr59 ∉ fapply f_ vr59))))
+            (X ∈ T S = ((X ∈ S) ∧ (X ∉ (fapply f_ X))))
         ) {
         apply t33;
     };
 
     // (step t41 (cl (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))) (∈ _x_ (FunApp _f_ _x_))) :rule resolution :premises (t37 h2))
-    have t41: Prf (or (and (X ∈ S) (X ∉ fapply f_ X))  (X ∈ fapply f_ X)) {
+    have t41: Prf (or ((X ∈ S) ∧ (X ∉ fapply f_ X))  (X ∈ fapply f_ X)) {
 
-        have t37': Prf (or (or (X ∈ fapply f_ X) (and (X ∈ S) (X ∉ fapply f_ X))) (X ∉ S)) {
-            apply or_assoc_l (X ∈ fapply f_ X) (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S);
-            apply or_comm  (or (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S)) (X ∈ fapply f_ X);
-            apply or_assoc_l (and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ S) (X ∈ fapply f_ X);
+        have t37': Prf (or (or (X ∈ fapply f_ X) ((X ∈ S) ∧ (X ∉ fapply f_ X))) (X ∉ S)) {
+            apply or_assoc_l (X ∈ fapply f_ X) ((X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ S);
+            apply or_comm  (or ((X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ S)) (X ∈ fapply f_ X);
+            apply or_assoc_l ((X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ S) (X ∈ fapply f_ X);
             apply t37
         };
 
-        apply or_comm (X ∈ fapply f_ X) (and (X ∈ S) (X ∉ fapply f_ X))
+        apply or_comm (X ∈ fapply f_ X) ((X ∈ S) ∧ (X ∉ fapply f_ X))
             (reduction_clause2
                 (X ∈ S)
                 false
-                (or (X ∈ fapply f_ X) (and (X ∈ S) (X ∉ fapply f_ X)))
+                (or (X ∈ fapply f_ X) ((X ∈ S) ∧ (X ∉ fapply f_ X)))
                 (orI2 false (X ∈ S)  H2)
                 t37'
             )
     };
 
     // (step t42 (cl (= (∈ _x_ (T _S_)) (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) :rule resolution :premises (t40 t18))
-    have t42: Prf ((X ∈ T S) = (and (X ∈ S) (X ∉ fapply f_ X))) {
+    have t42: Prf ((X ∈ T S) = ((X ∈ S) ∧ (X ∉ fapply f_ X))) {
         apply reduction_clause
-        (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59))
+        (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = (vr59 ∈ vr58) ∧ (vr59 ∉ fapply f_ vr59))
         false
-        ((X ∈ T S) = (and (X ∈ S) (X ∉ fapply f_ X)))
-        (orI1 (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = and (vr59 ∈ vr58) (vr59 ∉ fapply f_ vr59)) false t18)
+        ((X ∈ T S) = ((X ∈ S) ∧ (X ∉ fapply f_ X)))
+        (orI1 (`forall vr58, `forall vr59, (vr59 ∈ T vr58) = (vr59 ∈ vr58) ∧ (vr59 ∉ fapply f_ vr59)) false t18)
         t40
     };
 
@@ -732,7 +731,7 @@ begin
     // (step t47 (cl (∈ _x_ (FunApp _f_ _x_))) :rule resolution :premises (t46 t38 t41 t42))
     have t47: Prf (X ∈ fapply f_ X) {
         have t41': Prf (or (X ∈ T S) (X ∈ fapply f_ X)) {
-            apply subst (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X)) (λ z, or z (X ∈ fapply f_ X)) t42 t41
+            apply subst (X ∈ T S) ((X ∈ S) ∧ (X ∉ fapply f_ X)) (λ z, or z (X ∈ fapply f_ X)) t42 t41
         };
         // t38 is useless here because it reduce to True with t42 equality
         apply reduction_clause
@@ -744,27 +743,27 @@ begin
     };
 
     // (step t48 (cl (not (and (∈ _x_ _S_) (not (∈ _x_ (FunApp _f_ _x_)))))) :rule resolution :premises (t34 t47))
-    have t48: Prf ( ¬ and (X ∈ S) (X ∉ fapply f_ X)) {
+    have t48: Prf ( ¬ (X ∈ S) ∧ (X ∉ fapply f_ X)) {
         apply reduction_clause2
             (X ∈ fapply f_ X)
             false
-            ( ¬ and (X ∈ S) (X ∉ fapply f_ X))
+            ( ¬ (X ∈ S) ∧ (X ∉ fapply f_ X))
             (orI2 false (X ∈ fapply f_ X)  t47)
             t34
     };
 
     // (step t49 (cl (not (∈ _x_ (T _S_)))) :rule resolution :premises (t39 t48 t42))
     have t49: Prf (X ∉ T S) {
-        have t39' : Prf (or ((X ∈ T S) ≠ and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ T S)) {
+        have t39' : Prf (or ((X ∈ T S) ≠ (X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ T S)) {
             apply reduction_clause2
-                (and (X ∈ S) (X ∉ fapply f_ X))
-                (or ((X ∈ T S) ≠ and (X ∈ S) (X ∉ fapply f_ X)) (X ∉ T S))
+                ((X ∈ S) ∧ (X ∉ fapply f_ X))
+                (or ((X ∈ T S) ≠ (X ∈ S) ∧ (X ∉ fapply f_ X)) (X ∉ T S))
                 false
                 t39
-                (orI2 false (¬ (and (X ∈ S) (X ∉ fapply f_ X))) t48)
+                (orI2 false (¬ ((X ∈ S) ∧ (X ∉ fapply f_ X))) t48)
         };
         have t39'': Prf (or ((X ∈ T S) ≠ (X ∈ T S)) (X ∉ T S)) {
-            apply subst (X ∈ T S) (and (X ∈ S) (X ∉ fapply f_ X)) (λ z, or ((X ∈ T S) ≠ z) (X ∉ T S)) t42 t39'
+            apply subst (X ∈ T S) ((X ∈ S) ∧ (X ∉ fapply f_ X)) (λ z, or ((X ∈ T S) ≠ z) (X ∉ T S)) t42 t39'
         };
         have t39''': Prf (or false (X ∉ T S)) { apply t39''};
         apply t39'''

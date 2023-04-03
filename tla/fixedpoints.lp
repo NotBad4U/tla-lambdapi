@@ -11,7 +11,7 @@ require open tla.settheory;
 
 /** Monotonic operators on set D. */
 symbol monotonic D f ≔ 
-  and (f D ⊆ D)
+    (f D ⊆ D) ∧
       (bforall (subset D)
          (λ S, bforall (subset D)
             (λ T, imp (S ⊆ T) (f S ⊆ f T))));

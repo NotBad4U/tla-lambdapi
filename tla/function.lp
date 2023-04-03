@@ -36,7 +36,7 @@ symbol FuncSet:  U → U → U;
 constant symbol FuncSetAx f S T: Prf (
                                         (f ∈ (FuncSet S T))
                                         ⟺
-                                        (and (isAFunc f)  (DOMAIN f = and S (bforall S   (λ x, (fapply f x) ∈ T))))
+                                        ((isAFunc f) ∧  (DOMAIN f = (S ∧ (bforall S   (λ x, (fapply f x) ∈ T)))))
                                     );
 
 
@@ -88,10 +88,10 @@ begin
     apply funcEqual f g HfIsFunc HgIsFunc HDomEqual H;
 end;
 
-opaque symbol funcEqualIff f g :  Prf( isAFunc f ) → Prf( isAFunc g ) → Prf ((f = g) ⟺ (and (DOMAIN f = DOMAIN g) (bforall (DOMAIN g) (λ x, (fapply f x) = (fapply g x))))) ≔
+opaque symbol funcEqualIff f g :  Prf( isAFunc f ) → Prf( isAFunc g ) → Prf ((f = g) ⟺ ((DOMAIN f = DOMAIN g) ∧ (bforall (DOMAIN g) (λ x, (fapply f x) = (fapply g x))))) ≔
 begin
     assume f g HfIsFunc HgIsFunc;
-    apply iffI (f = g) (and (DOMAIN f = DOMAIN g) (bforall (DOMAIN g) (λ x, fapply f x = fapply g x)))
+    apply iffI (f = g) ((DOMAIN f = DOMAIN g) ∧ (bforall (DOMAIN g) (λ x, fapply f x = fapply g x)))
     {
         assume HEqfg;
         apply andI (DOMAIN f = DOMAIN g) ((bforall (DOMAIN g) (λ x, fapply f x = fapply g x))) // split "and"
@@ -251,7 +251,7 @@ begin
 end;
 
 opaque symbol funcConstruct p S: Prf (bforall S (λ x, `exists y, (p x y))) 
-                                →  Prf (`exists f, and (and (isAFunc(f)) (DOMAIN f = S)) (bforall S (λ x, p x (fapply f x)))) ≔
+                                →  Prf (`exists f, isAFunc(f) ∧ (DOMAIN f = S) ∧ (bforall S (λ x, p x (fapply f x)))) ≔
 begin
     admit;
 end;

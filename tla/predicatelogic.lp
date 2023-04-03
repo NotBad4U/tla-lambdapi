@@ -148,14 +148,16 @@ constant symbol not-def x : Prf (¬ x = ite x false true);
 
 rule ¬ ($x = $x) ↪ ¬ $x;
 
-symbol and : U → U → U;
-constant symbol and-def x y : Prf (and x y = ite x (ite y true false) false);
+symbol ∧ : U → U → U;
+notation ∧ infix right 3;
+constant symbol and-def x y : Prf (x ∧ y = ite x (ite y true false) false);
+
 symbol or : U → U → U;
 constant symbol or-def x y : Prf (or x y = ite x true (ite y true false));
 symbol imp : U → U → U;
 constant symbol imp-def x y : Prf (imp x y = ite x (ite y true false) true);
 symbol ⟺ : U → U → U;
-constant symbol iff-def x y : Prf (⟺ x y = and (imp x y) (imp y x));
+constant symbol iff-def x y : Prf (⟺ x y = (imp x y) ∧ (imp y x));
 notation ⟺ infix 1;
 
 rule or $x $x ↪ $x;
@@ -270,10 +272,10 @@ begin
     { assume np; apply notE (¬ p) p nnp np }
 end;
 
-opaque symbol andI p q : Prf p → Prf q → Prf (and p q) ≔
+opaque symbol andI p q : Prf p → Prf q → Prf (p ∧ q) ≔
 begin
     assume p q pp pq;
-    apply subst (and p q) (ite p (ite q true false) false) (λ z, z) (and-def p q);
+    apply subst (p ∧ q) (ite p (ite q true false) false) (λ z, z) (and-def p q);
     apply iteI p (ite q true false) false (λ u, u)
     { assume _;
       apply iteI q true false (λ u, u)
@@ -283,11 +285,11 @@ begin
     { assume pf; apply pf pp }
 end;
 
-opaque symbol andE p q r : Prf (and p q) → (Prf p → Prf q → Prf r) → Prf r ≔
+opaque symbol andE p q r : Prf (p ∧ q) → (Prf p → Prf q → Prf r) → Prf r ≔
 begin
     assume p q r pand pqr;
     have pite: Prf (ite p (ite q true false) false)
-    {  apply ssubst (and p q) (ite p (ite q true false) false) (λ z, z) (and-def p q) pand  };
+    {  apply ssubst (p ∧ q) (ite p (ite q true false) false) (λ z, z) (and-def p q) pand  };
     apply caseSplit p r
     {  assume pp;
        have qite: Prf (ite q true false)
@@ -307,7 +309,7 @@ begin
     }
 end;
 
-opaque symbol andD1 p q : Prf (and p q) → Prf p ≔
+opaque symbol andD1 p q : Prf (p ∧ q) → Prf p ≔
 begin
     assume p q pand;
     apply andE p q _ pand;
@@ -315,7 +317,7 @@ begin
     apply pp
 end;
 
-opaque symbol andD2 p q : Prf (and p q) → Prf q ≔
+opaque symbol andD2 p q : Prf (p ∧ q) → Prf q ≔
 begin
     assume p q pand;
     apply andE p q _ pand;
@@ -480,15 +482,15 @@ end;
 opaque symbol iffI p q : (Prf p → Prf q) → (Prf q → Prf p) → Prf (p ⟺ q) ≔
 begin
     assume p q pq qp;
-    apply subst (p ⟺ q) (and (imp p q) (imp q p)) (λ z, z) (iff-def p q);
+    apply subst (p ⟺ q) ((imp p q) ∧ (imp q p)) (λ z, z) (iff-def p q);
     apply andI (imp p q) (imp q p) (impI p q pq) (impI q p qp)
 end;
 
 opaque symbol iffE p q r : Prf (p ⟺ q) → (Prf (imp p q) → Prf (imp q p) → Prf r) → Prf r ≔
 begin
     assume p q r piff pqqpr;
-    have pand: Prf (and (imp p q) (imp q p))
-    {  apply ssubst (p ⟺ q) (and (imp p q) (imp q p)) (λ z, z) (iff-def p q) piff };
+    have pand: Prf ((imp p q) ∧ (imp q p))
+    {  apply ssubst (p ⟺ q) ((imp p q) ∧ (imp q p)) (λ z, z) (iff-def p q) piff };
     apply andE (imp p q) (imp q p) r pand pqqpr
 end;
 
@@ -509,7 +511,7 @@ end;
 opaque symbol Iffrefl a : Prf (a ⟺ a) ≔
 begin
     assume a;
-    apply subst (a ⟺ a) (and (imp a a) (imp a a)) (λ z, z) (iff-def a a);
+    apply subst (a ⟺ a) ((imp a a) ∧ (imp a a)) (λ z, z) (iff-def a a);
     apply andI (imp a a) (imp a a) {
         apply impI a a;
         assume H;
@@ -531,8 +533,8 @@ end;
 opaque symbol iffD1 a b: Prf (a ⟺ b) → Prf a → Prf b ≔
 begin
     assume a b Hiff Ha;
-    have IffUnfold: Prf (and (imp a b) (imp b a)) {
-        apply ssubst (a ⟺ b) (and (imp a b) (imp b a)) (λ z, z) (iff-def a b) Hiff;
+    have IffUnfold: Prf ((imp a b) ∧ (imp b a)) {
+        apply ssubst (a ⟺ b) ((imp a b) ∧ (imp b a)) (λ z, z) (iff-def a b) Hiff;
     };
     have HImpab: Prf (imp a b) {
         apply andD1 (imp a b) (imp b a) IffUnfold;
@@ -543,8 +545,8 @@ end;
 opaque symbol iffD2 a b: Prf (a ⟺ b) → Prf b → Prf a ≔
 begin
     assume a b Hiff Ha;
-    have IffUnfold: Prf (and (imp a b) (imp b a)) {
-        apply ssubst (a ⟺ b) (and (imp a b) (imp b a)) (λ z, z) (iff-def a b) Hiff;
+    have IffUnfold: Prf ((imp a b) ∧ (imp b a)) {
+        apply ssubst (a ⟺ b) ((imp a b) ∧ (imp b a)) (λ z, z) (iff-def a b) Hiff;
     };
     have HImpab: Prf (imp b a) {
         apply andD2 (imp a b) (imp b a) IffUnfold;
