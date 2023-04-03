@@ -154,15 +154,11 @@ symbol or : U → U → U;
 constant symbol or-def x y : Prf (or x y = ite x true (ite y true false));
 symbol imp : U → U → U;
 constant symbol imp-def x y : Prf (imp x y = ite x (ite y true false) true);
-symbol iff : U → U → U;
-constant symbol iff-def x y : Prf (iff x y = and (imp x y) (imp y x));
+symbol ⟺ : U → U → U;
+constant symbol iff-def x y : Prf (⟺ x y = and (imp x y) (imp y x));
+notation ⟺ infix 1;
 
 rule or $x $x ↪ $x;
-
-symbol ⟺ : U → U → U;
-notation ⟺ infix 1;
-rule $x ⟺ $y ↪ iff ($x) ($y);
-
 
 symbol ≠ : U → U → U;
 notation ≠ infix 1;
